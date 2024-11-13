@@ -27,5 +27,3 @@ Check the leaderboard for a competitive edge.
 Contributing
 Feel free to submit issues, feature requests, and pull requests to improve the platform.
 
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
