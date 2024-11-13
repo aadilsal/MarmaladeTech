@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+{% block title %}ERROR 404 - Marmalade Tech{% endblock title%}
+{% block content %}
+<style>
+    h1{
+        font-size:100px;
+        color:red
+    }
+</style>
+    <div class="container my-5">
+        <h1 class="text-center">Page Not Found!</h1>
+        <a href="{% url 'home' %}" class="btn btn-lg">Home</a>
+    </div>
+{% endblock content %}

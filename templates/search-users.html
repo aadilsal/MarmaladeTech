@@ -1,0 +1,44 @@
+{% extends "index.html" %} 
+{% block title %}User Search - Marmalade Tech{% endblock title %} 
+{% block content %}
+
+<div class="container text-center">
+  <h1 class="display-10 my-5">Search Result for "{{query}}"</h1>
+  <div class="container marketing">
+    
+    <div class="row justify-content-center"> <!-- Centering the row -->
+      {% if users|length == 0 %}
+      <div class="col-12">
+        <h4 class="text-center text-danger">
+          No User available!
+        </h4>
+      </div>
+      {% else %}
+        {% for user in users %}
+        <div class="col-6 col-sm-4 col-md-3 mb-4"> <!-- Adjust column sizes for different screen widths -->
+          <div class="position-relative">
+            <img
+              src="{{user.profile.profile_img.url }}"
+              class="img-fluid rounded-circle"  
+            />
+            <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+              {{ forloop.counter }}
+            </span> -->
+            <h2 class="fw-normal">@{{user.username}}</h2>
+            <p>{{user.profile.bio | truncatewords:5 }}</p>
+            <p>
+              <a
+                class="btn btn-secondary"
+                href="{% url 'profile' user.username %}"
+              >View Profile »</a>
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <!-- End of row -->
+  </div>
+</div>
+
+{% endblock content %}

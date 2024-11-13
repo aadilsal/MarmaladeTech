@@ -1,0 +1,70 @@
+{% extends 'index.html' %}
+
+{% block title %}@{{ user_profile2.user.username }} Profile - MarmaladeTech{% endblock title %}
+{% block content %}
+  
+<h1 class="display-5 text-center my-5">@{{ user_profile2.user.username }}</h1>
+<div >
+  {% for message in messages %}
+  <h5 class="text-{{message.level_tag}} text-center">{{message}}</h5>
+  {% endfor %}
+</div>
+<div class="profile-container text-center">
+  {% if request.user.username == user_profile2.user.username %}
+    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+      <a href="{% url 'edit_profile' %}" type="button" class="btn btn-outline-primary">Edit</a>
+      <a href="{% url 'delete_profile' %}" type="button" class="btn btn-outline-warning">Delete</a>
+    </div>
+  {% endif %}
+</div>
+
+<div class="container text-center my-4">
+  <div class="row row-cols-sm-1 row-cols-md-2">
+    <div class="col-12">
+      <img src="{{ user_profile.profile_img.url }}" alt="user-profile" height="250" width="250">
+      <h2 class="fs-4">@{{ user_profile2.user.username }}</h2>
+    </div>
+    <div class="col-12 my-5">
+      <h2>{{ user_profile.user.first_name|default:'Full Name not available' }} {{ user_profile.user.last_name }}</h2>
+      <p class="fs-5"><i class="bi bi-gender-ambiguous"></i> {{ user_profile2.gender|default:'Gender not available' }}</p>
+      <p class="fs-5"><i class="bi bi-geo-alt-fill"></i> {{ user_profile2.location|default:'Location not available' }}</p>
+      <p class="fs-5"><i class="bi bi-file-person"></i> {{ user_profile2.bio|default:'Bio not available' }}</p>
+      {% if request.user.is_superuser %}
+      <p class="fs-5"><i class="bi bi-envelope-at"></i> <a href="mailto:{{user_profile2.user.mail}}"> {{user_profile2.user.email|default:'Email not available'}}</a></p>
+      {% endif %}
+    </div>
+  </div>
+  
+  <hr class="my-5">
+  <div class="container">
+    <div class="row row-cols-sm-1 row-cols-md-1 row-cols-lg-1">
+      <div class="col-12">
+        <h3>Quiz Attended by {{ user_profile2.user.username }}</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Quiz</th>
+              <th scope="col">Marks</th>
+              <th scope="col">Time</th>
+            </tr>
+          </thead>
+          <tbody>
+           {% for submission in submissions %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td title="{{submission.quiz.title}}">{{ submission.quiz.title|truncatewords:8 }}</td>
+                  <td>{{ submission.score }}/{{submission.quiz.question_set.all|length}}</td>
+                  <td>{{ submission.submitted_at|timesince}} ago </td>
+                </tr>
+              {% endfor %}
+             
+          </tbody>
+        </table>
+      </div>
+     
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

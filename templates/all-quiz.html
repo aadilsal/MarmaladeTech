@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+{% block title %}All Quizzes-Marmalade Tech{% endblock title %}
+
+{% block content %}
+    <h1 class="display-5 text-center my-5">All Quiz Page</h1>
+
+    <div class="container">
+        <div class="d-flex flex-wrap">
+            <a href="{% url 'all_quiz' %}" class="btn btn-sm btn-light m-1">All Quizzes</a>
+            {% for category in categories%}
+            <a href="{% url 'search' category.name %}" class="btn btn-sm btn-light m-1">{{category.name}}</a>
+            {% endfor %}            
+        </div>
+    </div>
+
+    <form class="conatiner d-flex  justify-content-center my-4 " role="search" method="get" action="{% url 'search' ' ' %}">
+        <input name='q' class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success ms-2 " type="submit">Search</button>
+
+    </form>
+
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+
+            <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 rows-cols-lg-3 g-3">
+                {% if quizzes|length > 0 %}
+                {% for quiz in quizzes %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h4>{{quiz.title}}</h4>
+                            <p class="card-text">Total Questions: {{quiz.question_set.all|length}}</p>
+                            <p class="card-text">{{quiz.description}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a href="{% url 'quiz' quiz.id %}" type="button" class="btn btn-sm btn-success">Start Quiz</a>
+
+                                </div>
+                                <small class="text-body-secondary">{{quiz.created_at | timesince }} ago </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="col lg-12 col md-12 col-12">
+                    <p class="text-center text-danger fs-5">No Quiz Found.</p>
+                </div>
+                {% endif %}
+            </div>
+
+{% endblock content %}
