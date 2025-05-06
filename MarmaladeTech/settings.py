@@ -35,8 +35,9 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ["127.0.0.1","localhost"] 
+ALLOWED_HOSTS = ["127.0.0.1","mdcatexpert.up.railway.app"] 
 
+CSRF_TRUSTED_ORIGINS=["https://mdcatexpert.up.railway.app"]
 
 # Application definition
 
