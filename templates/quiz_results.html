@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ quiz.title }} - Results</h1>
+
+    <p>Your score: {{ score }}/{{ total_questions }}</p>
+
+    {% for question in questions %}
+        <div class="question">
+            <h3>{{ question.text }}</h3>
+            
+            <!-- Display image if exists -->
+            {% if question.image %}
+                <img src="{{ question.image.url }}" alt="Image for {{ question.text }}" class="question-image">
+            {% endif %}
+            
+            <div class="choices">
+                <p><strong>Your answer:</strong> {{ question.answer_set.filter(choice__is_correct=True).first.text }}</p>
+                <p><strong>Explanation:</strong> {{ question.explanation }}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+    <a href="{% url 'all_quiz' %}">Back to All Quizzes</a>
+{% endblock %}

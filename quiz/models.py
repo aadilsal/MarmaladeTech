@@ -37,31 +37,41 @@ class Quiz(models.Model):
 
     #function to extract excel file 
     def import_quiz_from_excel(self):
-        #excel file reading 
-        df=pd.read_excel(self.quiz_file.path)
+    # Read the Excel file
+        df = pd.read_excel(self.quiz_file.path)
 
-        #iterate over each row
-        for index,row in df.iterrows():
-            # extract question,choice and correct answer
+    # Iterate over each row
+        for index, row in df.iterrows():
+        # Extract question, choices, and correct answer
             question_text = row['Question']
-            choice1=row['A']
-            choice2=row['B']
-            choice3=row['C']
-            choice4=row['D']
-            correct_answer=row['Correct Answer']
+            img_path = row.get('Image', None)  # None if not provided
+            choice1 = row['A']
+            choice2 = row['B']
+            choice3 = row['C']
+            choice4 = row['D']
+            correct_answer = row['Answer']
+            explanation = row.get('Explanation', '')  # Empty if not provided
 
-            # create object of each question and choice
-            question=Question.objects.get_or_create(quiz=self,text=question_text)
+        # Create or get the question object
+            question_obj, created = Question.objects.get_or_create(
+                quiz=self, text=question_text, defaults={'explanation': explanation}
+            )
+            if img_path and isinstance(img_path,str):
+                question_obj.image = img_path
+                question_obj.save()
 
-            choice_1 = Choice.objects.get_or_create(question=question[0], text=choice1, is_correct=correct_answer == 'A')
-            choice_2 = Choice.objects.get_or_create(question=question[0], text=choice2, is_correct=correct_answer == 'B')
-            choice_3 = Choice.objects.get_or_create(question=question[0], text=choice3, is_correct=correct_answer == 'C')
-            choice_4 = Choice.objects.get_or_create(question=question[0], text=choice4, is_correct=correct_answer == 'D')
+        # Create or get the choice objects
+            Choice.objects.get_or_create(question=question_obj, text=choice1, is_correct=correct_answer == 'A')
+            Choice.objects.get_or_create(question=question_obj, text=choice2, is_correct=correct_answer == 'B')
+            Choice.objects.get_or_create(question=question_obj, text=choice3, is_correct=correct_answer == 'C')
+            Choice.objects.get_or_create(question=question_obj, text=choice4, is_correct=correct_answer == 'D')
 
 
 class Question(models.Model):
     quiz=models.ForeignKey(Quiz,on_delete=models.CASCADE)
     text=models.TextField()
+    explanation=models.TextField(blank=True,null=True)
+    image=models.ImageField(upload_to='questions/',blank=True,null=True)
 
 
     def __str__(self):
