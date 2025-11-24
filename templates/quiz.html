@@ -71,6 +71,7 @@
     var userScore = document.getElementById("user-score");
 
     var quizDuration = (questions.length) * 60;
+    var quiz_timer_id;
 
     // Timer Update
     function updateTimer() {
@@ -132,7 +133,7 @@
     submitButton.addEventListener("click", submitQuiz);
 
     // Timer Interval
-    var quiz_timer_id = setInterval(updateTimer, 1000);
+    quiz_timer_id = setInterval(updateTimer, 1000);
     // // Highlight correct answers if the quiz has already been submitted
     // if ({{ show_explanation|yesno:"true,false" }}) {
     // highlightCorrectAnswers();

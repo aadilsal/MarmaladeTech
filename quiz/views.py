@@ -96,7 +96,7 @@
     
 #     return render(request,'quiz.html',context)
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from account.models import Profile
@@ -107,8 +107,8 @@ from django.contrib import messages
 
 @login_required(login_url='login')
 def all_quiz_view(request):
-    user_object = User.objects.get(username=request.user)
-    user_profile = Profile.objects.get(user=user_object)
+    user_object = get_object_or_404(User, username=request.user)
+    user_profile = get_object_or_404(Profile, user=user_object)
 
     quizzes = Quiz.objects.order_by('-created_at')
     categories = Category.objects.all()
@@ -119,8 +119,8 @@ def all_quiz_view(request):
 
 @login_required(login_url='login')
 def search_view(request, category):
-    user_object = User.objects.get(username=request.user)
-    user_profile = Profile.objects.get(user=user_object)
+    user_object = get_object_or_404(User, username=request.user)
+    user_profile = get_object_or_404(Profile, user=user_object)
 
     # Search by query
     if request.GET.get('q') is not None:
@@ -139,8 +139,8 @@ def search_view(request, category):
 
 @login_required(login_url='login')
 def quiz_view(request, quiz_id):
-    user_object = User.objects.get(username=request.user)
-    user_profile = Profile.objects.get(user=user_object)
+    user_object = get_object_or_404(User, username=request.user)
+    user_profile = get_object_or_404(Profile, user=user_object)
 
     quiz = Quiz.objects.filter(id=quiz_id).first()
     if quiz is None:

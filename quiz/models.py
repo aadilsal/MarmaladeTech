@@ -37,34 +37,39 @@ class Quiz(models.Model):
 
     #function to extract excel file 
     def import_quiz_from_excel(self):
-    # Read the Excel file
-        df = pd.read_excel(self.quiz_file.path)
+        try:
+            # Read the Excel file
+            df = pd.read_excel(self.quiz_file.path)
 
-    # Iterate over each row
-        for index, row in df.iterrows():
-        # Extract question, choices, and correct answer
-            question_text = row['Question']
-            img_path = row.get('Image', None)  # None if not provided
-            choice1 = row['A']
-            choice2 = row['B']
-            choice3 = row['C']
-            choice4 = row['D']
-            correct_answer = row['Answer']
-            explanation = row.get('Explanation', '')  # Empty if not provided
+            # Iterate over each row
+            for index, row in df.iterrows():
+                # Extract question, choices, and correct answer
+                question_text = row['Question']
+                img_path = row.get('Image', None)  # None if not provided
+                choice1 = row['A']
+                choice2 = row['B']
+                choice3 = row['C']
+                choice4 = row['D']
+                correct_answer = row['Answer']
+                explanation = row.get('Explanation', '')  # Empty if not provided
 
-        # Create or get the question object
-            question_obj, created = Question.objects.get_or_create(
-                quiz=self, text=question_text, defaults={'explanation': explanation}
-            )
-            if img_path and isinstance(img_path,str):
-                question_obj.image = img_path
-                question_obj.save()
+                # Create or get the question object
+                question_obj, created = Question.objects.get_or_create(
+                    quiz=self, text=question_text, defaults={'explanation': explanation}
+                )
+                if img_path and isinstance(img_path, str):
+                    question_obj.image = img_path
+                    question_obj.save()
 
-        # Create or get the choice objects
-            Choice.objects.get_or_create(question=question_obj, text=choice1, is_correct=correct_answer == 'A')
-            Choice.objects.get_or_create(question=question_obj, text=choice2, is_correct=correct_answer == 'B')
-            Choice.objects.get_or_create(question=question_obj, text=choice3, is_correct=correct_answer == 'C')
-            Choice.objects.get_or_create(question=question_obj, text=choice4, is_correct=correct_answer == 'D')
+                # Create or get the choice objects
+                Choice.objects.get_or_create(question=question_obj, text=choice1, is_correct=correct_answer == 'A')
+                Choice.objects.get_or_create(question=question_obj, text=choice2, is_correct=correct_answer == 'B')
+                Choice.objects.get_or_create(question=question_obj, text=choice3, is_correct=correct_answer == 'C')
+                Choice.objects.get_or_create(question=question_obj, text=choice4, is_correct=correct_answer == 'D')
+        except Exception as e:
+            # Log the error or handle it appropriately
+            print(f"Error importing quiz from Excel: {e}")
+            raise
 
 
 class Question(models.Model):
@@ -83,7 +88,7 @@ class Choice(models.Model):
     is_correct=models.BooleanField(default=False)
 
 
-    def _str__(self):
+    def __str__(self):
         return f"{self.question.text[:50]},{self.text[:20]}"
     
 
@@ -108,11 +113,11 @@ class UserRank(models.Model):
 @receiver(post_save,sender=QuizSubmission)
 def update_leaderboard(sender,instance,created,**kwargs):
     if created:
-        calculate_leaderbaord()
+        calculate_leaderboard()
 
 
 
-def calculate_leaderbaord():
+def calculate_leaderboard():
     # count sum of scores of all users
     user_scores= (QuizSubmission.objects.values('user').annotate(total_score=Sum('score')).order_by('-total_score'))
 

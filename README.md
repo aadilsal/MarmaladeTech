@@ -1,6 +1,6 @@
-Marmalade Tech
+MDCAT EXPERT
 
-Marmalade Tech is an online quiz platform tailored for MDCAT students. The application provides a comprehensive learning environment with features like past paper solving, score tracking, and competitive leaderboards. It is designed using Django to create a seamless experience for students aiming to prepare effectively for MDCAT.
+MDCAT EXPERT is an online quiz platform tailored for MDCAT students. The application provides a comprehensive learning environment with features like past paper solving, score tracking, and competitive leaderboards. It is designed using Django to create a seamless experience for students aiming to prepare effectively for MDCAT.
 
 Features
 User Accounts: Create personal accounts to access all functionalities.

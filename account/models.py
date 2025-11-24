@@ -9,11 +9,11 @@ class Profile(models.Model):
     bio=models.TextField(blank=True,null=True)
     profile_img=models.ImageField(upload_to='profile_images',default='user.jpg',blank=True,null=True,verbose_name='Profile picture')
     location=models.CharField(max_length=100,blank=True,null=True)
-    GENDER={
+    GENDER=(
         ('Male','Male'),
         ('Female','Female'),
         ('Other','Other')
-    }
+    )
     gender=models.CharField(max_length=6, choices=GENDER,blank=True,null=True)
 
     def __str__(self):

@@ -1,0 +1,16 @@
+venv
+benv
+__pycache__
+.pytest_cache
+.git
+*.pyc
+db.sqlite3
+staticfiles
+media
+.venv
+*.egg-info
+dist
+build
+node_modules
+\.vscode
+*.log

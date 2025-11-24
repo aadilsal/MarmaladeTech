@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse,redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from account.models import Profile
 from quiz.models import UserRank,Question,Quiz,QuizSubmission
@@ -58,7 +58,7 @@ def is_superuser(user):
 @user_passes_test(is_superuser)
 @login_required(login_url="login")
 def dashboard_view(request):
-    user_profile = Profile.objects.get(user=request.user)
+    user_profile = get_object_or_404(Profile, user=request.user)
     
 
     #total numbers 
@@ -195,7 +195,7 @@ def blog_view(request,blog_id):
 def contact_view(request):
     context = {}
 
-    user_profile = Profile.objects.get(user=request.user)
+    user_profile = get_object_or_404(Profile, user=request.user)
     context = {"user_profile": user_profile}
 
     if request.method == "POST":
@@ -215,7 +215,7 @@ def contact_view(request):
 @user_passes_test(is_superuser)
 @login_required(login_url='login')
 def message_view(request,id):
-    user_profile = Profile.objects.get(user=request.user)
+    user_profile = get_object_or_404(Profile, user=request.user)
     message=Message.objects.filter(id=int(id)).first()
     if not message.is_read:
         message.is_read=True
@@ -246,7 +246,7 @@ def terms_conditions_view(request):
 def notes_view(request):
     context = {}
 
-    user_profile = Profile.objects.get(user=request.user)
+    user_profile = get_object_or_404(Profile, user=request.user)
     context = {"user_profile": user_profile}
         
     return render(request, "notes.html", context)

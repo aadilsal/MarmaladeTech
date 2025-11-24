@@ -1,5 +1,5 @@
 from django.db import models
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 
 # Create your models here.
 class Message(models.Model):
@@ -15,7 +15,7 @@ class Message(models.Model):
     
 class Blog(models.Model):
     title=models.CharField(max_length=255)
-    content=RichTextField()
+    content=CKEditor5Field('Content', config_name='extends')
     author= models.ForeignKey('auth.User',on_delete=models.CASCADE)
     STATUS=(
         ('public','Public'),

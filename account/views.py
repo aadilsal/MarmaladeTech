@@ -7,7 +7,7 @@ from quiz.models import Quiz
 from quiz.models import QuizSubmission
 
 # Create your views here.
-def regsiter(request):
+def register(request):
     if request.user.is_authenticated:
         return redirect('profile',request.user.username)
 
@@ -53,18 +53,15 @@ def regsiter(request):
 
 @login_required(login_url='login')
 def profile(request,username):
-    #profile user
-    #user_object2=User.objects.get(username=username)
+    #profile user (the user whose profile we're viewing)
     user_object2=get_object_or_404(User,username=username)
-    #user_profile2=Profile.objects.get(user=user_object2)
     user_profile2=get_object_or_404(Profile,user=user_object2)
-    #request user
-    #user_object=User.objects.get(username=request.user)
-    user_object=get_object_or_404(User,username=username)
-    #user_profile=Profile.objects.get(user=user_object)
+    
+    #request user (the currently logged in user)
+    user_object=get_object_or_404(User,username=request.user.username)
     user_profile=get_object_or_404(Profile,user=user_object)
+    
     submissions=QuizSubmission.objects.filter(user=user_object2)
-
 
     context={"user_profile":user_profile,"user_profile2":user_profile2,"submissions":submissions}
     return render(request,'profile.html',context)
@@ -73,8 +70,8 @@ def profile(request,username):
 
 @login_required(login_url='login')
 def editProfile(request):
-    user_object = User.objects.get(username=request.user)
-    user_profile = Profile.objects.get(user=user_object)
+    user_object = get_object_or_404(User, username=request.user)
+    user_profile = get_object_or_404(Profile, user=user_object)
 
     if request.method == "POST":
         # Image
@@ -122,8 +119,8 @@ def editProfile(request):
 
 @login_required(login_url='login')
 def deleteProfile(request):
-    user_object = User.objects.get(username=request.user)
-    user_profile = Profile.objects.get(user=user_object)
+    user_object = get_object_or_404(User, username=request.user)
+    user_profile = get_object_or_404(Profile, user=user_object)
 
     if request.method== "POST":
         user_profile.delete()
