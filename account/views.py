@@ -63,7 +63,21 @@ def profile(request,username):
     
     submissions=QuizSubmission.objects.filter(user=user_object2)
 
-    context={"user_profile":user_profile,"user_profile2":user_profile2,"submissions":submissions}
+    # Calculate average score percentage
+    if submissions:
+        total_percentage = 0
+        count = 0
+        for sub in submissions:
+            total_q = sub.quiz.question_set.count()
+            if total_q > 0:
+                percentage = (sub.score / total_q) * 100
+                total_percentage += percentage
+                count += 1
+        average_score = total_percentage / count if count > 0 else 0
+    else:
+        average_score = 0
+
+    context={"user_profile":user_profile,"user_profile2":user_profile2,"submissions":submissions, "average_score": average_score}
     return render(request,'profile.html',context)
 
 

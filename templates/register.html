@@ -1,52 +1,75 @@
 {% extends 'index.html' %}
 
-{% block title %}Registeration Page{% endblock title %}
+{% block title %}Register - MDCAT Expert{% endblock title %}
+
 {% block content %}
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="auth-container bg-white p-5 rounded shadow" style="max-width: 450px; width: 100%;">
+        <div class="auth-header text-center mb-4">
+            <h1 class="h3 mb-3">
+                <i class="bi bi-person-plus me-2 text-primary"></i>Sign Up
+            </h1>
+            <p class="text-muted">Join thousands of students preparing for MDCAT success!</p>
+        </div>
 
-       <h1 class="display-5 text-center my-5">Register Page</h1>
-<div class="conatiner">
-    <div class="row">
-        <div class="col">
-          
+        {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <div class="col">
-          <div>
-            {% for message in messages %}
-            <h5 class="text-danger">{{message}}</h5>
-            {% endfor %}
-          </div>
-          <form method="POST" action="">
-          {% csrf_token %}
-      
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label visually-hidden ">Email Address</label>
-                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email"required>
-                  </div>
-                <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label visually-hidden ">Username</label>
-                  <input type="username" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Username"required>
-                </div>
-                <div class="mb-3">
-                  <label for="exampleInputPassword1" class="form-label visually-hidden ">Password</label>
-                  <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
-                </div>
-                <div class="mb-3">
-                    <label for="exampleInputPassword2" class="form-label visually-hidden ">Enter Password Again</label>
-                    <input type="password" name="password2" class="form-control" id="exampleInputPassword2" placeholder="Enter password again" required>
-                  </div>
-                <div class="mb-3 form-check">
-                  <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
-                  <label class="form-check-label" for="exampleCheck1"><a href="{% url 'terms_conditions' %}">Terms & Conditions</a></label>
-                </div>
-                <button type="submit" class="btn btn-primary">Register</button>
-                <p>Already a user? <a href="{% url 'login' %}">Log in</a></p>
-              </form>
-        </div>
-        <div class="col">
-          
-        </div>
-      </div>
+        {% endfor %}
+
+        <form method="POST" action="">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="email" class="form-label">
+                    <i class="bi bi-envelope me-2"></i>Email Address
+                </label>
+                <input type="email" name="email" class="form-control form-control-lg" id="email" placeholder="Enter your email" required>
+                <div class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="username" class="form-label">
+                    <i class="bi bi-person me-2"></i>Username
+                </label>
+                <input type="text" name="username" class="form-control form-control-lg" id="username" placeholder="Choose a username" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">
+                    <i class="bi bi-lock me-2"></i>Password
+                </label>
+                <input type="password" name="password" class="form-control form-control-lg" id="password" placeholder="Create a password" required>
+                <div class="form-text">Password must be at least 8 characters long.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="password2" class="form-label">
+                    <i class="bi bi-lock-fill me-2"></i>Confirm Password
+                </label>
+                <input type="password" name="password2" class="form-control form-control-lg" id="password2" placeholder="Confirm your password" required>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                <label class="form-check-label" for="terms">
+                    I agree to the <a href="{% url 'terms_conditions' %}" target="_blank">Terms & Conditions</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                <i class="bi bi-person-plus me-2"></i>Create Account
+            </button>
+
+            <div class="text-center">
+                <p class="mb-0">
+                    Already have an account?
+                    <a href="{% url 'login' %}" class="text-primary fw-bold">Sign in here</a>
+                </p>
+            </div>
+        </form>
     </div>
-
-   
-    {% endblock content %}
+</div>
+{% endblock content %}

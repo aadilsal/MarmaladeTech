@@ -1,84 +1,168 @@
 {% extends 'index.html' %}
+{% load quiz_tags %}
 
-{% block title %} {{ quiz.title }} - MDCATExpert {% endblock title %}
+{% block title %} {{ quiz.title }} - MDCAT Expert {% endblock title %}
 
 {% block content %}
-<h1 class="display-5 text-center my-5">{{ quiz.title }} ({{ total_questions }} Questions)</h1>
+<div class="container quiz-container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'all_quiz' %}">Quizzes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ quiz.title }}</li>
+                </ol>
+            </nav>
 
-<p class="fs-4 text-center container">{{ quiz.description }}</p>
-<div class="container">
-    <div class="d-flex justify-content-between">
-        <span class="fs-5">{{ quiz.created_at }}</span>
-        <span class="fs-5" id="timer">timer</span>
-    </div>
-
-    {% if messages %}
-        <div id="message-div" class="text-center text-success">
-            {% for message in messages %}
-                <h4>{{ message }}</h4>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    {% if score is not None %}
-        <div class="alert alert-success text-center my-3">
-            <strong>Your Score: {{ score }}/{{ total_questions }}</strong>
-        </div>
-    {% endif %}
-
-    <div class="questions">
-        {% for question in quiz.question_set.all %}
-        <div class="card mb-2 question">
-            <div class="card-header fw-bold">
-                Question {{ forloop.counter }}
-            </div>
-            <div class="cardBody">
-                <p class="card-txt">{{ question.text }}</p>
-                {% for option in question.choice_set.all %}
-                <div class="form-check">
-                    <label class="form-check-label" for="{{ option.id }}">
-                        <input class="form-check-input" value="{{ option.text }}" type="radio" name="{{ question.id }}" id="{{ option.id }}">
-                        {{ option.text }}
-                    </label>
-                    {% if option.is_correct %}
-                    <span class="visually-hidden correct-answer">{{ option.text }}</span>
-                    {% endif %}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-5 fw-bold">{{ quiz.title }}</h1>
+                <div class="timer-display" id="timer">
+                    <i class="bi bi-clock me-2"></i>
+                    <span id="timer-text">00:00</span>
                 </div>
-                {% endfor %}
-                {% if show_explanation %}
-                <p class="mt-2 text-muted">
-                    <strong>Explanation:</strong> {{ question.explanation }}
-                </p>
-                {% endif %}
             </div>
-        </div>
-        {% endfor %}
-    </div>
 
-    <form action="" method="post" id="quiz-form">
-        {% csrf_token %}
-        <input type="hidden" name="score" value="0" id="user-score">
-        <button type="submit" class="btn btn-primary" id="submit-button" {% if show_explanation %}disabled{% endif %}>Submit Quiz</button>
-    </form>
+            <p class="lead text-muted mb-4">{{ quiz.description }}</p>
+
+            <div class="progress mb-4" style="height: 10px;">
+                <div class="progress-bar" role="progressbar" style="width: 0%" id="quiz-progress"></div>
+            </div>
+
+            {% if messages %}
+            <div class="alert alert-info text-center mb-4">
+                {% for message in messages %}
+                    <strong>{{ message }}</strong>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if score is not None %}
+            <div class="alert alert-success text-center mb-4">
+                <h4><i class="bi bi-check-circle-fill me-2"></i>Your Score: {{ score }}/{{ total_questions }}</h4>
+            </div>
+            {% endif %}
+
+            <form action="" method="post" id="quiz-form">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="0" id="user-score">
+
+                <div class="questions">
+                    {% for question in quiz.question_set.all %}
+                    <div class="question-card card mb-4" id="question-{{ forloop.counter }}">
+                        <div class="question-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-question-circle me-2"></i>
+                                Question {{ forloop.counter }} of {{ total_questions }}
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="card-text fs-5 mb-4">{{ question.text }}</p>
+
+                            {% for option in question.choice_set.all %}
+                            <label class="option-label" for="option-{{ option.id }}">
+                                <input class="form-check-input me-3 option-input" value="{{ option.text }}" type="radio" name="{{ question.id }}" id="option-{{ option.id }}" {% if user_answers|get_item:question.id == option.text %}checked{% endif %}>
+                                {{ option.text }}
+                                {% if show_explanation and option.is_correct %}
+                                <i class="bi bi-check-circle-fill text-success ms-2"></i>
+                                {% endif %}
+                                {% if option.is_correct %}
+                                <span class="visually-hidden correct-answer">{{ option.text }}</span>
+                                {% endif %}
+                            </label>
+                            {% endfor %}
+
+                            {% if show_explanation %}
+                            <div class="alert alert-light border mt-4 explanation-container" data-question-id="{{ question.id }}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="alert-heading mb-0">
+                                        <i class="bi bi-lightbulb me-2"></i>Explanation
+                                        {% if question.is_ai_generated %}
+                                        <span class="badge bg-primary ms-2" title="This explanation was generated by AI">AI-Generated</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary ms-2" title="This is a manually created explanation">Stored Explanation</span>
+                                        {% endif %}
+                                    </h6>
+                                    {% if user.is_staff %}
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-outline-primary regenerate-btn" 
+                                                data-question-id="{{ question.id }}"
+                                                title="Regenerate AI explanation">
+                                            <i class="bi bi-arrow-repeat"></i> Regenerate
+                                        </button>
+                                        {% if question.ai_cost %}
+                                        <span class="btn btn-outline-info disabled" title="Estimated cost: ${{ question.ai_cost }}">
+                                            ${{ question.ai_cost|floatformat:4 }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if question.ai_generated_at %}
+                                <div class="text-muted small mb-2">
+                                    <i class="bi bi-clock me-1"></i>Generated on {{ question.ai_generated_at|date:"M j, Y g:i A" }}
+                                </div>
+                                {% endif %}
+                                
+                                <div class="explanation-text">
+                                    {{ question.get_explanation|safe }}
+                                </div>
+                                
+                                <div class="mt-3 d-none loading-spinner">
+                                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    Generating explanation...
+                                </div>
+                            </div>
+                            {% else %}
+                            <!-- Generate explanation button for completed quizzes -->
+                            {% if score is not None %}
+                            <div class="mt-3 text-center">
+                                <button type="button" class="btn btn-outline-primary generate-explanation-btn" 
+                                        data-question-id="{{ question.id }}"
+                                        title="Generate AI explanation for this question">
+                                    <i class="bi bi-robot me-2"></i>Generate AI Explanation
+                                </button>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5" id="submit-button" {% if show_explanation %}disabled{% endif %}>
+                        <i class="bi bi-check-circle me-2"></i>Submit Quiz
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
     // Elements
     var submitButton = document.getElementById("submit-button");
-    var timerSpan = document.getElementById("timer");
-    var questions = document.querySelectorAll(".question");
+    var timerSpan = document.getElementById("timer-text");
+    var progressBar = document.getElementById("quiz-progress");
+    var questions = document.querySelectorAll(".question-card");
     var quizForm = document.getElementById("quiz-form");
     var userScore = document.getElementById("user-score");
+    var optionInputs = document.querySelectorAll(".option-input");
 
-    var quizDuration = (questions.length) * 60;
+    var quizDuration = (questions.length) * 60; // 1 minute per question
     var quiz_timer_id;
+    var currentQuestion = 0;
 
     // Timer Update
     function updateTimer() {
         var minutes = Math.floor(quizDuration / 60);
         var seconds = quizDuration % 60;
 
-        timerSpan.innerText = minutes + " min " + seconds + " sec";
+        timerSpan.innerText = minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
 
         if (quizDuration <= 0) {
             clearTimeout(quiz_timer_id);
@@ -86,6 +170,13 @@
         } else {
             quizDuration--;
         }
+    }
+
+    // Update Progress
+    function updateProgress() {
+        var answered = document.querySelectorAll('input[type="radio"]:checked').length;
+        var progress = (answered / questions.length) * 100;
+        progressBar.style.width = progress + "%";
     }
 
     // Quiz Submit Function
@@ -116,15 +207,16 @@
         questions.forEach(question => {
             var correctAnswer = question.querySelector(".correct-answer");
             if (correctAnswer) {
-                correctAnswer.previousElementSibling.querySelector("input").classList.add("bg-success");
-                correctAnswer.previousElementSibling.classList.add("fw-bold");
+                var label = correctAnswer.parentElement;
+                label.classList.add("fw-bold", "text-success");
+                var input = label.querySelector("input");
+                input.classList.add("bg-success");
             }
         });
 
         // Disable choices and submit button
         submitButton.disabled = true;
-        var options = document.querySelectorAll(".form-check-input");
-        options.forEach(option => {
+        optionInputs.forEach(option => {
             option.disabled = true;
         });
     }
@@ -132,12 +224,204 @@
     // Attach Event Listener
     submitButton.addEventListener("click", submitQuiz);
 
+    // Update progress on option change
+    optionInputs.forEach(input => {
+        input.addEventListener("change", updateProgress);
+    });
+
     // Timer Interval
     quiz_timer_id = setInterval(updateTimer, 1000);
-    // // Highlight correct answers if the quiz has already been submitted
-    // if ({{ show_explanation|yesno:"true,false" }}) {
-    // highlightCorrectAnswers();
+    updateTimer(); // Initial call
+</script>
 
+{% if show_explanation %}
+<script>
+    // Highlight correct answers and disable inputs after submission
+    highlightCorrectAnswers();
+    optionInputs.forEach(option => {
+        option.disabled = true;
+    });
+</script>
+{% endif %}
 
+<script>
+// AI Explanation Generation
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle generate explanation buttons
+    document.querySelectorAll('.generate-explanation-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const questionId = this.getAttribute('data-question-id');
+            generateExplanation(questionId, this);
+        });
+    });
+
+    // Handle regenerate buttons (admin only)
+    document.querySelectorAll('.regenerate-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const questionId = this.getAttribute('data-question-id');
+            regenerateExplanation(questionId, this);
+        });
+    });
+});
+
+function generateExplanation(questionId, button) {
+    const container = document.querySelector(`.explanation-container[data-question-id="${questionId}"]`);
+    if (!container) {
+        // Create new container
+        const questionCard = button.closest('.question-card');
+        const cardBody = questionCard.querySelector('.card-body');
+        
+        const newContainer = document.createElement('div');
+        newContainer.className = 'alert alert-light border mt-4 explanation-container';
+        newContainer.setAttribute('data-question-id', questionId);
+        newContainer.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="alert-heading mb-0">
+                    <i class="bi bi-lightbulb me-2"></i>Explanation
+                    <span class="badge bg-primary ms-2">AI-Generated</span>
+                </h6>
+            </div>
+            <div class="explanation-text"></div>
+            <div class="mt-3 loading-spinner">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Generating explanation...
+            </div>
+        `;
+        cardBody.appendChild(newContainer);
+    }
+
+    const explanationContainer = container || document.querySelector(`.explanation-container[data-question-id="${questionId}"]`);
+    const explanationText = explanationContainer.querySelector('.explanation-text');
+    const loadingSpinner = explanationContainer.querySelector('.loading-spinner');
+    const badge = explanationContainer.querySelector('.badge');
+
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+    explanationText.innerHTML = '';
+    loadingSpinner.classList.remove('d-none');
+
+    fetch(`/quiz/api/question/${questionId}/generate-explanation/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        loadingSpinner.classList.add('d-none');
+        
+        if (data.success) {
+            explanationText.innerHTML = data.explanation;
+            badge.className = 'badge bg-primary ms-2';
+            badge.textContent = 'AI-Generated';
+            
+            // Add timestamp if available
+            if (data.generated_at) {
+                const timestampDiv = document.createElement('div');
+                timestampDiv.className = 'text-muted small mb-2';
+                timestampDiv.innerHTML = `<i class="bi bi-clock me-1"></i>Generated on ${new Date(data.generated_at).toLocaleString()}`;
+                explanationContainer.insertBefore(timestampDiv, explanationText);
+            }
+            
+            // Hide the generate button
+            button.style.display = 'none';
+            
+            showToast('Explanation generated successfully!', 'success');
+        } else {
+            explanationText.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+            button.disabled = false;
+            button.innerHTML = '<i class="bi bi-robot me-2"></i>Generate AI Explanation';
+            showToast('Failed to generate explanation: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        loadingSpinner.classList.add('d-none');
+        explanationText.innerHTML = '<div class="alert alert-danger">Network error occurred.</div>';
+        button.disabled = false;
+        button.innerHTML = '<i class="bi bi-robot me-2"></i>Generate AI Explanation';
+        showToast('Network error occurred.', 'error');
+        console.error('Error:', error);
+    });
+}
+
+function regenerateExplanation(questionId, button) {
+    const container = button.closest('.explanation-container');
+    const explanationText = container.querySelector('.explanation-text');
+    const loadingSpinner = container.querySelector('.loading-spinner');
+
+    // Show loading state
+    button.disabled = true;
+    explanationText.innerHTML = '';
+    loadingSpinner.classList.remove('d-none');
+
+    fetch(`/quiz/api/question/${questionId}/regenerate-explanation/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        loadingSpinner.classList.add('d-none');
+        
+        if (data.success) {
+            explanationText.innerHTML = data.explanation;
+            
+            // Update timestamp
+            let timestampDiv = container.querySelector('.text-muted');
+            if (timestampDiv) {
+                timestampDiv.innerHTML = `<i class="bi bi-clock me-1"></i>Generated on ${new Date(data.generated_at).toLocaleString()}`;
+            } else {
+                timestampDiv = document.createElement('div');
+                timestampDiv.className = 'text-muted small mb-2';
+                timestampDiv.innerHTML = `<i class="bi bi-clock me-1"></i>Generated on ${new Date(data.generated_at).toLocaleString()}`;
+                container.insertBefore(timestampDiv, explanationText);
+            }
+            
+            // Update cost if available
+            const costBtn = container.querySelector('.btn-outline-info');
+            if (costBtn && data.cost) {
+                costBtn.textContent = `$${data.cost.toFixed(4)}`;
+                costBtn.title = `Estimated cost: $${data.cost.toFixed(4)}`;
+            }
+            
+            showToast('Explanation regenerated successfully!', 'success');
+        } else {
+            explanationText.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+            showToast('Failed to regenerate explanation: ' + data.error, 'error');
+        }
+        
+        button.disabled = false;
+    })
+    .catch(error => {
+        loadingSpinner.classList.add('d-none');
+        explanationText.innerHTML = '<div class="alert alert-danger">Network error occurred.</div>';
+        button.disabled = false;
+        showToast('Network error occurred.', 'error');
+        console.error('Error:', error);
+    });
+}
+
+function showToast(message, type) {
+    // Simple toast implementation - you can enhance this
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+    toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    toast.innerHTML = `
+        <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close float-end" onclick="this.parentElement.remove()"></button>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
 </script>
 {% endblock content %}

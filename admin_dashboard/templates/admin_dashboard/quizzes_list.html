@@ -1,0 +1,296 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-title">
+            <h1><i class="bi bi-list-check"></i> Quizzes Management</h1>
+            <p class="text-muted">Manage quiz categories, questions, and submissions</p>
+        </div>
+        <div class="page-actions">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-plus"></i> Add Quiz
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'admin_dashboard:quiz_create' %}">
+                        <i class="bi bi-plus-circle me-2"></i>Create Manually
+                    </a></li>
+                    <li><a class="dropdown-item" href="{% url 'admin_dashboard:quiz_excel_upload' %}">
+                        <i class="bi bi-file-earmark-excel me-2"></i>Upload from Excel
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label for="q" class="form-label">Search</label>
+                    <input type="text" name="q" id="q" class="form-control" placeholder="Search quizzes..."
+                           value="{{ search_query }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" id="category" class="form-control">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="sort" class="form-label">Sort By</label>
+                    <select name="sort" id="sort" class="form-control">
+                        <option value="-created_at" {% if sort_by == '-created_at' %}selected{% endif %}>Newest First</option>
+                        <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>Oldest First</option>
+                        <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title A-Z</option>
+                        <option value="-title" {% if sort_by == '-title' %}selected{% endif %}>Title Z-A</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-search"></i> Filter
+                    </button>
+                    <a href="{% url 'admin_dashboard:quizzes_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bulk Actions -->
+    <form id="bulkActionForm" method="POST" action="{% url 'admin_dashboard:quizzes_bulk_action' %}">
+        {% csrf_token %}
+        <input type="hidden" name="selected_items" id="selectedItems">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <button type="button" id="selectAllBtn" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-check-all"></i> Select All
+                </button>
+                <span id="selectedCount" class="ms-2 text-muted">0 selected</span>
+            </div>
+            <div>
+                <button type="button" id="bulkDeleteBtn" class="btn btn-danger btn-sm" disabled>
+                    <i class="bi bi-trash"></i> Delete Selected
+                </button>
+            </div>
+        </div>
+
+        <!-- Quizzes Table -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="40">
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Questions</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for quiz in page_obj %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="quiz-checkbox" value="{{ quiz.id }}">
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ quiz.title }}</div>
+                                        {% if quiz.description %}
+                                            <small class="text-muted">{{ quiz.description|truncatechars:50 }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ quiz.category.name }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ quiz.question_count }} questions</span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ quiz.created_at|date:"M d, Y" }}<br>
+                                            {{ quiz.created_at|time:"H:i" }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'admin_dashboard:quiz_detail' quiz.id %}" class="btn btn-sm btn-outline-primary" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'admin_dashboard:quiz_edit' quiz.id %}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Delete"
+                                                    onclick="confirmDelete('{% url 'admin_dashboard:quiz_delete' quiz.id %}', '{{ quiz.title }}')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                            No quizzes found.
+                                            {% if search_query or category_filter %}
+                                                <br><a href="{% url 'admin_dashboard:quizzes_list' %}" class="btn btn-sm btn-outline-primary">Clear filters</a>
+                                            {% else %}
+                                                <br><a href="{% url 'admin_dashboard:quiz_excel_upload' %}" class="btn btn-sm btn-primary">Upload your first quiz</a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if category_filter %}category={{ category_filter }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if category_filter %}category={{ category_filter }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if category_filter %}category={{ category_filter }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ page_obj.next_page_number }}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the quiz "<strong id="deleteQuizTitle"></strong>"?</p>
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    This action cannot be undone. All associated questions and submissions will also be deleted.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Quiz</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Bulk selection functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const quizCheckboxes = document.querySelectorAll('.quiz-checkbox');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const selectedCount = document.getElementById('selectedCount');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const bulkActionForm = document.getElementById('bulkActionForm');
+    const selectedItemsInput = document.getElementById('selectedItems');
+
+    function updateSelectedCount() {
+        const checkedBoxes = document.querySelectorAll('.quiz-checkbox:checked');
+        const count = checkedBoxes.length;
+        selectedCount.textContent = count + ' selected';
+        bulkDeleteBtn.disabled = count === 0;
+
+        // Update select all checkbox
+        selectAllCheckbox.checked = count === quizCheckboxes.length && count > 0;
+        selectAllCheckbox.indeterminate = count > 0 && count < quizCheckboxes.length;
+    }
+
+    selectAllCheckbox.addEventListener('change', function() {
+        quizCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectedCount();
+    });
+
+    selectAllBtn.addEventListener('click', function() {
+        const allChecked = Array.from(quizCheckboxes).every(cb => cb.checked);
+        quizCheckboxes.forEach(checkbox => {
+            checkbox.checked = !allChecked;
+        });
+        updateSelectedCount();
+    });
+
+    quizCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectedCount);
+    });
+
+    bulkDeleteBtn.addEventListener('click', function() {
+        const selectedIds = Array.from(quizCheckboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        if (selectedIds.length === 0) {
+            alert('Please select quizzes to delete.');
+            return;
+        }
+
+        if (confirm(`Are you sure you want to delete ${selectedIds.length} quiz(es)? This action cannot be undone.`)) {
+            selectedItemsInput.value = JSON.stringify(selectedIds);
+            bulkActionForm.action = "{% url 'admin_dashboard:quizzes_bulk_action' %}";
+            bulkActionForm.submit();
+        }
+    });
+});
+
+// Delete confirmation
+function confirmDelete(url, title) {
+    document.getElementById('deleteQuizTitle').textContent = title;
+    document.getElementById('deleteForm').action = url;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}
+{% endblock %}

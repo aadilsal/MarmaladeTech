@@ -1,0 +1,272 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-title">
+            <h1><i class="bi bi-graph-up"></i> Analytics & Reports</h1>
+            <p class="text-muted">Comprehensive insights into quiz performance and user engagement</p>
+        </div>
+        <div class="page-actions">
+            <button type="button" class="btn btn-primary" onclick="exportReport()">
+                <i class="bi bi-download"></i> Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-people fs-1 text-primary mb-2"></i>
+                    <h3 class="card-title">{{ total_users }}</h3>
+                    <p class="card-text text-muted">Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-question-circle fs-1 text-success mb-2"></i>
+                    <h3 class="card-title">{{ total_quizzes }}</h3>
+                    <p class="card-text text-muted">Total Quizzes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-bar-chart fs-1 text-warning mb-2"></i>
+                    <h3 class="card-title">{{ total_attempts }}</h3>
+                    <p class="card-text text-muted">Total Attempts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-trophy fs-1 text-danger mb-2"></i>
+                    <h3 class="card-title">{{ avg_score|floatformat:1 }}%</h3>
+                    <p class="card-text text-muted">Average Score</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quiz Performance Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="scoreDistributionChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Attempts Over Time</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="attemptsOverTimeChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Performance -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Performance by Category</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryPerformanceChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Top Performing Users</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>User</th>
+                                    <th>Average Score</th>
+                                    <th>Attempts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user_stat in top_users %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ user_stat.user.username }}</td>
+                                        <td>{{ user_stat.avg_score|floatformat:1 }}%</td>
+                                        <td>{{ user_stat.attempt_count }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No data available</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Reports -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Detailed Analytics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Quiz Statistics</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Most Attempted Quiz:</strong> {{ most_attempted_quiz.title|default:"N/A" }}</li>
+                                <li><strong>Highest Average Score:</strong> {{ highest_avg_quiz.title|default:"N/A" }} ({{ highest_avg_score|floatformat:1 }}%)</li>
+                                <li><strong>Lowest Average Score:</strong> {{ lowest_avg_quiz.title|default:"N/A" }} ({{ lowest_avg_score|floatformat:1 }}%)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>User Engagement</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Active Users (Last 30 days):</strong> {{ active_users_30 }}</li>
+                                <li><strong>Active Users (Last 7 days):</strong> {{ active_users_7 }}</li>
+                                <li><strong>Average Attempts per User:</strong> {{ avg_attempts_per_user|floatformat:1 }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Performance Insights</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Pass Rate (70%+):</strong> {{ pass_rate|floatformat:1 }}%</li>
+                                <li><strong>Excellent Rate (90%+):</strong> {{ excellent_rate|floatformat:1 }}%</li>
+                                <li><strong>Fail Rate (<40%):</strong> {{ fail_rate|floatformat:1 }}%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Score Distribution Chart
+const scoreDistributionCtx = document.getElementById('scoreDistributionChart').getContext('2d');
+new Chart(scoreDistributionCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Excellent (90%+)', 'Good (70-89%)', 'Average (40-69%)', 'Poor (<40%)'],
+        datasets: [{
+            data: {{ score_distribution|safe }},
+            backgroundColor: [
+                '#28a745',
+                '#ffc107',
+                '#17a2b8',
+                '#dc3545'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Attempts Over Time Chart
+const attemptsOverTimeCtx = document.getElementById('attemptsOverTimeChart').getContext('2d');
+new Chart(attemptsOverTimeCtx, {
+    type: 'line',
+    data: {
+        labels: {{ attempts_over_time_labels|safe }},
+        datasets: [{
+            label: 'Attempts',
+            data: {{ attempts_over_time_data|safe }},
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Category Performance Chart
+const categoryPerformanceCtx = document.getElementById('categoryPerformanceChart').getContext('2d');
+new Chart(categoryPerformanceCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ category_labels|safe }},
+        datasets: [{
+            label: 'Average Score (%)',
+            data: {{ category_scores|safe }},
+            backgroundColor: 'rgba(40, 167, 69, 0.8)',
+            borderColor: '#28a745',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100
+            }
+        }
+    }
+});
+
+// Export Report Function
+function exportReport() {
+    // Create a simple CSV export
+    const csvContent = "data:text/csv;charset=utf-8,"
+        + "Metric,Value\n"
+        + "Total Users," + {{ total_users }} + "\n"
+        + "Total Quizzes," + {{ total_quizzes }} + "\n"
+        + "Total Attempts," + {{ total_attempts }} + "\n"
+        + "Average Score," + {{ avg_score|floatformat:1 }} + "%\n"
+        + "Pass Rate," + {{ pass_rate|floatformat:1 }} + "%\n"
+        + "Active Users (30 days)," + {{ active_users_30 }} + "\n"
+        + "Active Users (7 days)," + {{ active_users_7 }} + "\n";
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "analytics_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+{% endblock %}
+{% endblock %}

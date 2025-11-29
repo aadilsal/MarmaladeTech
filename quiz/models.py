@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.cache import cache
+from django.conf import settings
 
 
 # Create your models here.
@@ -77,10 +79,41 @@ class Question(models.Model):
     text=models.TextField()
     explanation=models.TextField(blank=True,null=True)
     image=models.ImageField(upload_to='questions/',blank=True,null=True)
-
+    
+    # AI-generated explanation fields
+    ai_explanation=models.TextField(blank=True,null=True)
+    ai_generated_at=models.DateTimeField(blank=True,null=True)
+    ai_cost=models.DecimalField(max_digits=10, decimal_places=6, blank=True, null=True)  # Cost in USD
+    ai_model=models.CharField(max_length=100, blank=True, null=True)
+    ai_error=models.TextField(blank=True, null=True)  # Store error messages if generation fails
 
     def __str__(self):
         return self.text[:50]
+    
+    def get_explanation(self):
+        """Get the best available explanation, preferring AI-generated if available."""
+        if self.ai_explanation:
+            return self.ai_explanation
+        return self.explanation or ""
+    
+    def is_ai_generated(self):
+        """Check if explanation is AI-generated."""
+        return bool(self.ai_explanation)
+    
+    def generate_ai_explanation(self, force=False):
+        """Generate AI explanation using Gemini API."""
+        from .services import ExplanationGenerator
+        
+        if not force and self.ai_explanation:
+            return self.ai_explanation
+        
+        generator = ExplanationGenerator()
+        return generator.generate_explanation(self)
+    
+    def get_cache_key(self):
+        """Generate cache key for this question's explanation."""
+        return f"question_explanation_{self.id}"
+
 
 class Choice(models.Model):
     question=models.ForeignKey(Question,on_delete=models.CASCADE)
@@ -90,6 +123,15 @@ class Choice(models.Model):
 
     def __str__(self):
         return f"{self.question.text[:50]},{self.text[:20]}"
+    
+    def get_choice_letter(self):
+        """Get the choice letter (A, B, C, D) based on position."""
+        choices = list(self.question.choice_set.order_by('id'))
+        try:
+            index = choices.index(self)
+            return chr(65 + index)  # 65 is ASCII for 'A'
+        except ValueError:
+            return "?"
     
 
 class QuizSubmission(models.Model):

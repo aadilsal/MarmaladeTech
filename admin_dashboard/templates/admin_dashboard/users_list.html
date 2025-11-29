@@ -1,0 +1,240 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block content %}
+<div class="content-container">
+    <!-- Header -->
+    <div class="content-header">
+        <div class="header-left">
+            <h2>Users Management</h2>
+            <p>Manage user accounts and permissions</p>
+        </div>
+        <div class="header-right">
+            <a href="{% url 'admin_dashboard:user_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Add New User
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="filters-section">
+        <form method="GET" class="filters-form">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="q" class="form-control" placeholder="Search users..."
+                           value="{{ search_query }}">
+                </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="role" class="form-select">
+                        <option value="">All Roles</option>
+                        <option value="superuser" {% if role_filter == 'superuser' %}selected{% endif %}>Superuser</option>
+                        <option value="regular" {% if role_filter == 'regular' %}selected{% endif %}>Regular</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="sort" class="form-select">
+                        <option value="-date_joined" {% if sort_by == '-date_joined' %}selected{% endif %}>Newest First</option>
+                        <option value="date_joined" {% if sort_by == 'date_joined' %}selected{% endif %}>Oldest First</option>
+                        <option value="username" {% if sort_by == 'username' %}selected{% endif %}>Username A-Z</option>
+                        <option value="-username" {% if sort_by == '-username' %}selected{% endif %}>Username Z-A</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-secondary w-100">
+                        <i class="bi bi-search me-1"></i>Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bulk Actions -->
+    <form id="bulkActionForm" method="POST" action="{% url 'admin_dashboard:users_bulk_action' %}">
+        {% csrf_token %}
+        <input type="hidden" name="selected_items" id="selectedItems">
+        <div class="bulk-actions">
+            <div class="bulk-actions-left">
+                <input type="checkbox" id="selectAll" class="form-check-input">
+                <label for="selectAll" class="form-check-label ms-2">Select All</label>
+                <span id="selectedCount" class="ms-3 text-muted">0 selected</span>
+            </div>
+            <div class="bulk-actions-right">
+                <select name="action" class="form-select" id="bulkActionSelect" disabled>
+                    <option value="">Choose Action</option>
+                    <option value="activate">Activate</option>
+                    <option value="deactivate">Deactivate</option>
+                    <option value="delete">Delete</option>
+                </select>
+                <button type="submit" class="btn btn-danger ms-2" id="bulkActionBtn" disabled>
+                    <i class="bi bi-check-circle me-1"></i>Apply
+                </button>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th width="40"></th>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Quizzes</th>
+                        <th>Avg Score</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in page_obj %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
+                        </td>
+                        <td>{{ user.id }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="{{ user.profile.profile_img.url|default:'/static/images/user.jpg' }}"
+                                     alt="Avatar" class="user-avatar-sm me-2">
+                                <strong>{{ user.username }}</strong>
+                            </div>
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.get_full_name|default:"—" }}</td>
+                        <td>
+                            {% if user.is_superuser %}
+                                <span class="badge bg-danger">Superuser</span>
+                            {% else %}
+                                <span class="badge bg-secondary">User</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-warning">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                        <td>{{ user.quiz_count }}</td>
+                        <td>{{ user.avg_score|floatformat:1 }}%</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'admin_dashboard:user_detail' user.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'admin_dashboard:user_edit' user.id %}"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'admin_dashboard:user_delete' user.id %}"
+                                   class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="11" class="text-center py-4">
+                            <i class="bi bi-people display-4 text-muted"></i>
+                            <p class="text-muted mt-2">No users found</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Users pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">
+                        Previous
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">
+                            {{ num }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">
+                        Next
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const selectedCount = document.getElementById('selectedCount');
+    const bulkActionSelect = document.getElementById('bulkActionSelect');
+    const bulkActionBtn = document.getElementById('bulkActionBtn');
+    const selectedItemsInput = document.getElementById('selectedItems');
+
+    function updateSelectedCount() {
+        const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+        const count = checkedBoxes.length;
+        selectedCount.textContent = count + ' selected';
+
+        // Update select all checkbox
+        selectAllCheckbox.checked = count === rowCheckboxes.length && count > 0;
+        selectAllCheckbox.indeterminate = count > 0 && count < rowCheckboxes.length;
+
+        // Enable/disable bulk actions
+        bulkActionSelect.disabled = count === 0;
+        bulkActionBtn.disabled = count === 0;
+
+        // Update hidden input
+        const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+        selectedItemsInput.value = selectedIds.join(',');
+    }
+
+    selectAllCheckbox.addEventListener('change', function() {
+        rowCheckboxes.forEach(cb => {
+            cb.checked = this.checked;
+        });
+        updateSelectedCount();
+    });
+
+    rowCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateSelectedCount);
+    });
+});
+</script>
+{% endblock %}

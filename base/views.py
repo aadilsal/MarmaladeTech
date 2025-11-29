@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from account.models import Profile
-from quiz.models import UserRank,Question,Quiz,QuizSubmission
+from quiz.models import Question,Quiz,QuizSubmission,UserRank
 from django.contrib.auth.decorators import login_required,user_passes_test
 import datetime,math
 from .models import Message,Blog
@@ -14,20 +14,17 @@ from django.db.models import Q
 def home(request):
     context = {}  # Initialize context at the beginning
 
-    # Fetch the leaderboard users
-    leaderboard_users = UserRank.objects.order_by('rank')[:4]
-
     if request.user.is_authenticated:
         try:
             # Use request.user directly
             user_profile = Profile.objects.get(user=request.user)
-            context = {"user_profile": user_profile, "leaderboard_users": leaderboard_users}
+            context = {"user_profile": user_profile}
         except Profile.DoesNotExist:
             # Handle the case where the Profile does not exist
-            context = {"error": "Profile does not exist.", "leaderboard_users": leaderboard_users}
+            context = {"error": "Profile does not exist."}
     else:
-        # If not authenticated, just pass the leaderboard users
-        context = {"leaderboard_users": leaderboard_users}
+        # If not authenticated, just pass empty context
+        context = {}
 
     return render(request, 'welcome.html', context)
 

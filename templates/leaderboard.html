@@ -1,44 +1,107 @@
-{% extends "index.html" %} 
-{% block title %}Leaderboard - MDCAT EXPERT{% endblock title %} 
+{% extends "index.html" %}
+{% block title %}Leaderboard - MDCAT Expert{% endblock title %}
 {% block content %}
 
-<div class="container text-center">
-  <h1 class="display-10 my-5">Leaderboard</h1>
-  <div class="container marketing">
-    <!-- Row for leaderboard profiles -->
-    <div class="row justify-content-center"> <!-- Centering the row -->
-      {% if leaderboard_users|length == 0 %}
-      <div class="col-12">
-        <h4 class="text-center text-danger">
-          No User available on Leaderboard
-        </h4>
-      </div>
-      {% else %}
-        {% for rank in leaderboard_users %}
-        <div class="col-6 col-sm-4 col-md-3 mb-4"> <!-- Adjust column sizes for different screen widths -->
-          <div class="position-relative">
-            <img
-              src="{{ rank.user.profile.profile_img.url }}"
-              class="img-fluid rounded-circle"  
-            />
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-              {{ forloop.counter }}
-            </span>
-            <h2 class="fw-normal">@{{ rank.user.username }}</h2>
-            <p>{{ rank.user.profile.bio | truncatewords:5 }}</p>
-            <p>
-              <a
-                class="btn btn-secondary"
-                href="{% url 'profile' rank.user.username %}"
-              >View Profile »</a>
-            </p>
-          </div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="bi bi-trophy-fill text-warning me-3"></i>Leaderboard
+                </h1>
+                <p class="lead text-muted">See how you rank among fellow MDCAT aspirants</p>
+            </div>
+
+            {% if leaderboard_users|length == 0 %}
+            <div class="text-center">
+                <div class="empty-state">
+                    <i class="bi bi-trophy display-1 text-muted mb-3"></i>
+                    <h4 class="text-muted">No Rankings Available</h4>
+                    <p class="text-muted">Be the first to take a quiz and claim the top spot!</p>
+                    <a href="{% url 'all_quiz' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-play-circle me-2"></i>Start Your First Quiz
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="leaderboard-table card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col" class="text-center">#</th>
+                                    <th scope="col">Student</th>
+                                    <th scope="col" class="text-center">Score</th>
+                                    <th scope="col" class="text-center">Quizzes Taken</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rank in leaderboard_users %}
+                                <tr class="{% if request.user.username == rank.user.username %}table-info{% endif %}">
+                                    <td class="text-center">
+                                        {% if forloop.counter <= 3 %}
+                                        <span class="rank-badge rank-{{ forloop.counter }}">
+                                            {{ forloop.counter }}
+                                        </span>
+                                        {% else %}
+                                        <span class="fw-bold text-muted">{{ forloop.counter }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ rank.user.profile.profile_img.url }}"
+                                                 class="rounded-circle me-3"
+                                                 width="50" height="50"
+                                                 alt="{{ rank.user.username }}'s profile picture">
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">@{{ rank.user.username }}</h6>
+                                                <small class="text-muted">{{ rank.user.profile.bio|truncatewords:5|default:"MDCAT Aspirant" }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success fs-6 px-3 py-2">{{ rank.total_score|floatformat:1 }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info fs-6 px-3 py-2">{{ rank.quiz_count }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'profile' rank.user.username %}"
+                                           class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-person me-1"></i>View Profile
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {% if request.user.is_authenticated %}
+            <div class="text-center mt-4">
+                <div class="alert alert-light border">
+                    <h6 class="mb-2">
+                        <i class="bi bi-person-circle me-2"></i>Your Current Ranking
+                    </h6>
+                    {% with user_rank=leaderboard_users|length %}
+                    <p class="mb-0">
+                        {% for rank in leaderboard_users %}
+                        {% if request.user.username == rank.user.username %}
+                        You are currently ranked <strong>#{{ forloop.counter }}</strong> out of {{ user_rank }} students.
+                        {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% endwith %}
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
         </div>
-        {% endfor %}
-      {% endif %}
     </div>
-    <!-- End of row -->
-  </div>
 </div>
 
 {% endblock content %}

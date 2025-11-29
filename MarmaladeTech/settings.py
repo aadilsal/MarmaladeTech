@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'account',
     'base',
     'quiz',
+    'admin_dashboard',
     'django_ckeditor_5'
 ]
 
@@ -241,3 +242,15 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
+
+# Gemini AI Configuration
+GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
+GEMINI_MODEL = env('GEMINI_MODEL', default='gemini-1.5-flash')
+GEMINI_MAX_TOKENS = env.int('GEMINI_MAX_TOKENS', default=1000)
+GEMINI_TEMPERATURE = env.float('GEMINI_TEMPERATURE', default=0.7)
+
+# Caching Configuration
+EXPLANATION_CACHE_TIMEOUT = env.int('EXPLANATION_CACHE_TIMEOUT', default=86400)  # 24 hours
+
+# Rate Limiting
+EXPLANATION_RATE_LIMIT = env.int('EXPLANATION_RATE_LIMIT', default=10)  # requests per hour per user

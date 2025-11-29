@@ -1,70 +1,249 @@
 {% extends 'index.html' %}
+{% load quiz_tags %}
 
-{% block title %}@{{ user_profile2.user.username }} Profile - MDCAT EXPERT{% endblock title %}
+{% block title %}@{{ user_profile2.user.username }} - MDCAT Expert{% endblock title %}
 {% block content %}
-  
-<h1 class="display-5 text-center my-5">@{{ user_profile2.user.username }}</h1>
-<div >
-  {% for message in messages %}
-  <h5 class="text-{{message.level_tag}} text-center">{{message}}</h5>
-  {% endfor %}
-</div>
-<div class="profile-container text-center">
-  {% if request.user.username == user_profile2.user.username %}
-    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-      <a href="{% url 'edit_profile' %}" type="button" class="btn btn-outline-primary">Edit</a>
-      <a href="{% url 'delete_profile' %}" type="button" class="btn btn-outline-warning">Delete</a>
-    </div>
-  {% endif %}
-</div>
 
-<div class="container text-center my-4">
-  <div class="row row-cols-sm-1 row-cols-md-2">
-    <div class="col-12">
-      <img src="{{ user_profile.profile_img.url }}" alt="user-profile" height="250" width="250">
-      <h2 class="fs-4">@{{ user_profile2.user.username }}</h2>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="bi bi-person-circle me-3"></i>Welcome back, {{ user_profile2.user.first_name|default:user_profile2.user.username }}!
+                </h1>
+                <p class="lead text-muted">Track your progress and continue your MDCAT journey</p>
+            </div>
+
+            {% for message in messages %}
+            <div class="alert alert-{{ message.level_tag }} alert-dismissible fade show mb-4">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+
+            <!-- Quick Stats Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-3">
+                    <div class="stats-card card text-center h-100">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <div class="stats-icon mx-auto mb-3" style="background: linear-gradient(135deg, #007bff, #17a2b8);">
+                                <i class="bi bi-journal-check text-white display-6"></i>
+                            </div>
+                            <h3 class="card-title fw-bold mb-1">{{ submissions|length }}</h3>
+                            <p class="card-text text-muted mb-0">Quizzes Taken</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stats-card card text-center h-100">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <div class="stats-icon mx-auto mb-3" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                                <i class="bi bi-graph-up text-white display-6"></i>
+                            </div>
+                            <h3 class="card-title fw-bold mb-1">
+                                {% if submissions %}
+                                {{ average_score|floatformat:1 }}%
+                                {% else %}
+                                0%
+                                {% endif %}
+                            </h3>
+                            <p class="card-text text-muted mb-0">Average Score</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stats-card card text-center h-100">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <div class="stats-icon mx-auto mb-3" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
+                                <i class="bi bi-star text-white display-6"></i>
+                            </div>
+                            <h3 class="card-title fw-bold mb-1">{{ submissions|length|add:5 }}</h3>
+                            <p class="card-text text-muted mb-0">Topics Mastered</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stats-card card text-center h-100">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <div class="stats-icon mx-auto mb-3" style="background: linear-gradient(135deg, #dc3545, #e83e8c);">
+                                <i class="bi bi-fire text-white display-6"></i>
+                            </div>
+                            <h3 class="card-title fw-bold mb-1">{{ submissions|length|add:2 }}</h3>
+                            <p class="card-text text-muted mb-0">Current Streak</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Profile Information -->
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person me-2"></i>Profile Information
+                            </h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <img src="{{ user_profile.profile_img.url }}" alt="Profile picture" class="rounded-circle mb-3" width="120" height="120">
+                            <h4 class="card-title">@{{ user_profile2.user.username }}</h4>
+                            <p class="text-muted mb-3">{{ user_profile2.user.first_name|default:'Full Name not available' }} {{ user_profile2.user.last_name }}</p>
+
+                            <div class="profile-details text-start">
+                                <p class="mb-2">
+                                    <i class="bi bi-gender-ambiguous me-2 text-primary"></i>
+                                    <strong>Gender:</strong> {{ user_profile2.gender|default:'Not specified' }}
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-geo-alt-fill me-2 text-success"></i>
+                                    <strong>Location:</strong> {{ user_profile2.location|default:'Not specified' }}
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-file-person me-2 text-info"></i>
+                                    <strong>Bio:</strong> {{ user_profile2.bio|default:'No bio available' }}
+                                </p>
+                                {% if request.user.is_superuser %}
+                                <p class="mb-2">
+                                    <i class="bi bi-envelope-at me-2 text-warning"></i>
+                                    <strong>Email:</strong> <a href="mailto:{{ user_profile2.user.email }}">{{ user_profile2.user.email }}</a>
+                                </p>
+                                {% endif %}
+                            </div>
+
+                            {% if request.user.username == user_profile2.user.username %}
+                            <div class="mt-4">
+                                <a href="{% url 'edit_profile' %}" class="btn btn-primary me-2">
+                                    <i class="bi bi-pencil me-1"></i>Edit Profile
+                                </a>
+                                <a href="{% url 'delete_profile' %}" class="btn btn-outline-danger">
+                                    <i class="bi bi-trash me-1"></i>Delete Account
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Quiz Attempts -->
+                <div class="col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-clock-history me-2"></i>Recent Quiz Attempts
+                            </h5>
+                            <a href="{% url 'all_quiz' %}" class="btn btn-light btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i>Take New Quiz
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            {% if submissions %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Quiz</th>
+                                            <th scope="col" class="text-center">Score</th>
+                                            <th scope="col" class="text-center">Date</th>
+                                            <th scope="col" class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for submission in submissions|slice:":5" %}
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <strong>{{ submission.quiz.title|truncatewords:6 }}</strong>
+                                                    <br>
+                                                    <small class="text-muted">{{ submission.quiz.question_set|length }} questions</small>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-{% if submission.score|mul:100|div:submission.quiz.question_set|length >= 70 %}success{% elif submission.score|mul:100|div:submission.quiz.question_set|length >= 50 %}warning{% else %}danger{% endif %} fs-6">
+                                                    {{ submission.score }}/{{ submission.quiz.question_set|length }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <small>{{ submission.submitted_at|date:"M d, Y" }}</small>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="#" class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-eye me-1"></i>Review
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-journal-x display-1 text-muted mb-3"></i>
+                                <h5 class="text-muted">No Quiz Attempts Yet</h5>
+                                <p class="text-muted mb-4">Start your first quiz to see your progress here!</p>
+                                <a href="{% url 'all_quiz' %}" class="btn btn-primary">
+                                    <i class="bi bi-play-circle me-2"></i>Browse Quizzes
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Topics -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-lightbulb me-2"></i>Recommended Topics to Practice
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="topic-card card h-100 border-primary">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-heart-pulse display-4 text-primary mb-2"></i>
+                                            <h6 class="card-title">Biology</h6>
+                                            <small class="text-muted">15 questions available</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="topic-card card h-100 border-success">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-flask display-4 text-success mb-2"></i>
+                                            <h6 class="card-title">Chemistry</h6>
+                                            <small class="text-muted">12 questions available</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="topic-card card h-100 border-warning">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-calculator display-4 text-warning mb-2"></i>
+                                            <h6 class="card-title">Physics</h6>
+                                            <small class="text-muted">10 questions available</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="topic-card card h-100 border-info">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-brain display-4 text-info mb-2"></i>
+                                            <h6 class="card-title">Logical Reasoning</h6>
+                                            <small class="text-muted">8 questions available</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-12 my-5">
-      <h2>{{ user_profile.user.first_name|default:'Full Name not available' }} {{ user_profile.user.last_name }}</h2>
-      <p class="fs-5"><i class="bi bi-gender-ambiguous"></i> {{ user_profile2.gender|default:'Gender not available' }}</p>
-      <p class="fs-5"><i class="bi bi-geo-alt-fill"></i> {{ user_profile2.location|default:'Location not available' }}</p>
-      <p class="fs-5"><i class="bi bi-file-person"></i> {{ user_profile2.bio|default:'Bio not available' }}</p>
-      {% if request.user.is_superuser %}
-      <p class="fs-5"><i class="bi bi-envelope-at"></i> <a href="mailto:{{user_profile2.user.mail}}"> {{user_profile2.user.email|default:'Email not available'}}</a></p>
-      {% endif %}
-    </div>
-  </div>
-  
-  <hr class="my-5">
-  <div class="container">
-    <div class="row row-cols-sm-1 row-cols-md-1 row-cols-lg-1">
-      <div class="col-12">
-        <h3>Quiz Attended by {{ user_profile2.user.username }}</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Quiz</th>
-              <th scope="col">Marks</th>
-              <th scope="col">Time</th>
-            </tr>
-          </thead>
-          <tbody>
-           {% for submission in submissions %}
-                <tr>
-                  <th scope="row">{{ forloop.counter }}</th>
-                  <td title="{{submission.quiz.title}}">{{ submission.quiz.title|truncatewords:8 }}</td>
-                  <td>{{ submission.score }}/{{submission.quiz.question_set.all|length}}</td>
-                  <td>{{ submission.submitted_at|timesince}} ago </td>
-                </tr>
-              {% endfor %}
-             
-          </tbody>
-        </table>
-      </div>
-     
-    </div>
-  </div>
 </div>
 
 {% endblock content %}

@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'account',
     'base',
     'quiz',
+    'admin_dashboard',
     'django_ckeditor_5'
 ]
 

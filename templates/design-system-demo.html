@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDCAT Expert Design System Demo</title>
+    <link rel="stylesheet" href="{% static 'css/design-system.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="hero-section">
+            <div class="hero-content">
+                <h1 class="text-display-1">Design System Demo</h1>
+                <p class="text-body-large">Showcasing the MDCAT Expert design system components</p>
+            </div>
+        </header>
+
+        <section class="section">
+            <h2 class="text-heading-1">Color Palette</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-sample" style="background: var(--color-primary);"></div>
+                    <div class="color-info">
+                        <h4>Primary Blue</h4>
+                        <p>#007bff</p>
+                    </div>
+                </div>
+                <div class="color-card">
+                    <div class="color-sample" style="background: var(--color-secondary);"></div>
+                    <div class="color-info">
+                        <h4>Secondary Teal</h4>
+                        <p>#17a2b8</p>
+                    </div>
+                </div>
+                <div class="color-card">
+                    <div class="color-sample" style="background: var(--color-success);"></div>
+                    <div class="color-info">
+                        <h4>Success Green</h4>
+                        <p>#28a745</p>
+                    </div>
+                </div>
+                <div class="color-card">
+                    <div class="color-sample" style="background: var(--color-warning);"></div>
+                    <div class="color-info">
+                        <h4>Warning Yellow</h4>
+                        <p>#ffc107</p>
+                    </div>
+                </div>
+                <div class="color-card">
+                    <div class="color-sample" style="background: var(--color-error);"></div>
+                    <div class="color-info">
+                        <h4>Error Red</h4>
+                        <p>#dc3545</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="text-heading-1">Typography</h2>
+            <div class="typography-showcase">
+                <div class="type-sample">
+                    <h1 class="text-display-1">Display 1 - 60px</h1>
+                    <p class="text-caption">Display 1 - 60px</p>
+                </div>
+                <div class="type-sample">
+                    <h2 class="text-display-2">Display 2 - 48px</h2>
+                    <p class="text-caption">Display 2 - 48px</p>
+                </div>
+                <div class="type-sample">
+                    <h1 class="text-heading-1">Heading 1 - 36px</h1>
+                    <p class="text-caption">Heading 1 - 36px</p>
+                </div>
+                <div class="type-sample">
+                    <h2 class="text-heading-2">Heading 2 - 30px</h2>
+                    <p class="text-caption">Heading 2 - 30px</p>
+                </div>
+                <div class="type-sample">
+                    <h3 class="text-heading-3">Heading 3 - 24px</h3>
+                    <p class="text-caption">Heading 3 - 24px</p>
+                </div>
+                <div class="type-sample">
+                    <p class="text-body-large">Body Large - 18px. This is sample text to demonstrate the body large font size and line height.</p>
+                    <p class="text-caption">Body Large - 18px</p>
+                </div>
+                <div class="type-sample">
+                    <p class="text-body">Body - 16px. This is sample text to demonstrate the standard body font size and line height.</p>
+                    <p class="text-caption">Body - 16px</p>
+                </div>
+                <div class="type-sample">
+                    <p class="text-body-small">Body Small - 14px. This is sample text to demonstrate the small body font size and line height.</p>
+                    <p class="text-caption">Body Small - 14px</p>
+                </div>
+                <div class="type-sample">
+                    <p class="text-caption">Caption - 12px. This is sample text to demonstrate the caption font size and line height.</p>
+                    <p class="text-caption">Caption - 12px</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="text-heading-1">Buttons</h2>
+            <div class="button-showcase">
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-secondary">Secondary Button</button>
+                <button class="btn btn-success">Success Button</button>
+                <button class="btn btn-warning">Warning Button</button>
+                <button class="btn btn-error">Error Button</button>
+                <button class="btn btn-primary btn-lg">Large Button</button>
+                <button class="btn btn-primary btn-sm">Small Button</button>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="text-heading-1">Cards</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-heading-3">Standard Card</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-body">This is a standard card component with header and body sections.</p>
+                        <button class="btn btn-primary">Action</button>
+                    </div>
+                </div>
+
+                <div class="card quiz-card">
+                    <div class="card-header">
+                        <h3 class="text-heading-3">Quiz Card</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-body">This is a quiz card with hover effects and enhanced styling.</p>
+                        <button class="btn btn-primary">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="text-heading-1">Form Elements</h2>
+            <div class="form-showcase">
+                <div class="form-group">
+                    <label class="form-label" for="demo-name">Full Name</label>
+                    <input type="text" class="form-control" id="demo-name" placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="demo-email">Email Address</label>
+                    <input type="email" class="form-control" id="demo-email" placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="demo-message">Message</label>
+                    <textarea class="form-control" id="demo-message" rows="4" placeholder="Enter your message"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Select Option</label>
+                    <select class="form-control">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="demo-checkbox" class="form-check-input">
+                        <label class="form-check-label" for="demo-checkbox">I agree to the terms and conditions</label>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary">Submit Form</button>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="text-heading-1">Icons & Badges</h2>
+            <div class="icon-showcase">
+                <div class="icon-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Education</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-trophy"></i>
+                    <span>Achievement</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Time</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-star"></i>
+                    <span>Rating</span>
+                </div>
+            </div>
+
+            <div class="badge-showcase">
+                <span class="badge badge-primary">Primary</span>
+                <span class="badge badge-success">Success</span>
+                <span class="badge badge-warning">Warning</span>
+                <span class="badge badge-error">Error</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="text-heading-1">Progress & Loading</h2>
+            <div class="progress-showcase">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%;"></div>
+                </div>
+                <div class="progress-label">75% Complete</div>
+            </div>
+
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <span>Loading...</span>
+            </div>
+        </section>
+    </div>
+
+    <style>
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+        }
+
+        .color-card {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+        }
+
+        .color-sample {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
+        }
+
+        .color-info h4 {
+            margin: 0;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+        }
+
+        .color-info p {
+            margin: 0;
+            color: var(--color-text-secondary);
+            font-family: monospace;
+        }
+
+        .typography-showcase {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+        }
+
+        .type-sample {
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+        }
+
+        .button-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            margin-top: var(--space-4);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+        }
+
+        .form-showcase {
+            max-width: 500px;
+            margin-top: var(--space-4);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .icon-showcase {
+            display: flex;
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            min-width: 80px;
+        }
+
+        .icon-item i {
+            font-size: 24px;
+            color: var(--color-primary);
+        }
+
+        .badge-showcase {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .progress-showcase {
+            margin-top: var(--space-4);
+            max-width: 300px;
+        }
+
+        .progress-label {
+            margin-top: var(--space-2);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-top: var(--space-4);
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-border);
+            border-top: 2px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>

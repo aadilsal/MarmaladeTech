@@ -1,0 +1,214 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-title">
+            <h1><i class="bi bi-list-check"></i> {{ quiz.title }}</h1>
+            <p class="text-muted">{{ quiz.description|default:"No description" }}</p>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'admin_dashboard:quiz_edit' quiz.id %}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Edit Quiz
+            </a>
+            <a href="{% url 'admin_dashboard:quizzes_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Quizzes
+            </a>
+        </div>
+    </div>
+
+    <!-- Quiz Info Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-question-circle fs-1 text-primary mb-2"></i>
+                    <h4>{{ questions|length }}</h4>
+                    <p class="text-muted mb-0">Questions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-folder fs-1 text-success mb-2"></i>
+                    <h4>{{ quiz.category.name }}</h4>
+                    <p class="text-muted mb-0">Category</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar fs-1 text-info mb-2"></i>
+                    <h4>{{ quiz.created_at|date:"M d, Y" }}</h4>
+                    <p class="text-muted mb-0">Created</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-clock fs-1 text-warning mb-2"></i>
+                    <h4>{{ quiz.updated_at|date:"M d, Y" }}</h4>
+                    <p class="text-muted mb-0">Last Updated</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Questions List -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-question-circle"></i> Questions</h5>
+            <a href="{% url 'admin_dashboard:question_create' %}?quiz={{ quiz.id }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-plus"></i> Add Question
+            </a>
+        </div>
+        <div class="card-body p-0">
+            {% if questions %}
+                <div class="list-group list-group-flush">
+                    {% for question in questions %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-2">
+                                        <span class="badge bg-primary me-2">Q{{ forloop.counter }}</span>
+                                        {{ question.text|truncatechars:100 }}
+                                    </h6>
+
+                                    {% if question.image %}
+                                        <div class="mb-2">
+                                            <img src="{{ question.image.url }}" alt="Question image" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="row">
+                                        {% for choice in question.choice_set.all %}
+                                            <div class="col-md-6 mb-1">
+                                                <span class="badge {% if choice.is_correct %}bg-success{% else %}bg-light text-dark{% endif %}">
+                                                    {{ choice.get_choice_letter }}. {{ choice.text }}
+                                                    {% if choice.is_correct %}
+                                                        <i class="bi bi-check-circle-fill ms-1"></i>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    {% if question.explanation %}
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <strong>Explanation:</strong> {{ question.explanation|truncatechars:150 }}
+                                            </small>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if question.ai_explanation %}
+                                        <div class="mt-1">
+                                            <small class="text-success">
+                                                <i class="bi bi-robot"></i>
+                                                <strong>AI Explanation:</strong> {{ question.ai_explanation|truncatechars:150 }}
+                                            </small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="ms-3">
+                                    <div class="btn-group-vertical" role="group">
+                                        <a href="{% url 'admin_dashboard:question_detail' question.id %}" class="btn btn-sm btn-outline-primary" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{% url 'admin_dashboard:question_edit' question.id %}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-question-circle fs-1 text-muted mb-3"></i>
+                    <h5 class="text-muted">No questions found</h5>
+                    <p class="text-muted">This quiz doesn't have any questions yet.</p>
+                    <a href="{% url 'admin_dashboard:question_create' %}?quiz={{ quiz.id }}" class="btn btn-primary">
+                        <i class="bi bi-plus"></i> Add First Question
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quiz Statistics -->
+    {% if questions %}
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Question Types</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="questionTypesChart" width="200" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="bi bi-info-circle"></i> Quiz Summary</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <h4 class="text-primary">{{ questions|length }}</h4>
+                                    <small class="text-muted">Total Questions</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h4 class="text-success">
+                                    {% widthratio questions|length 1 1 %}
+                                </h4>
+                                <small class="text-muted">Complete Quiz</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% block extra_js %}
+{% if questions %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Question types chart (simplified - all are multiple choice for now)
+    const ctx = document.getElementById('questionTypesChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Multiple Choice'],
+            datasets: [{
+                data: [{{ questions|length }}]],
+                backgroundColor: ['#007bff'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}
+{% endblock %}

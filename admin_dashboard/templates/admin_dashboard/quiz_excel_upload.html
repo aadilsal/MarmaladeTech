@@ -1,0 +1,153 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-title">
+            <h1><i class="bi bi-file-earmark-excel"></i> Upload Quiz from Excel</h1>
+            <p class="text-muted">Create a new quiz by uploading an Excel file with questions and answers</p>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'admin_dashboard:quizzes_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Quizzes
+            </a>
+        </div>
+    </div>
+
+    <!-- Excel Format Instructions -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Excel File Format</h5>
+        </div>
+        <div class="card-body">
+            <p>Your Excel file should contain the following columns:</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Column</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Question</strong></td>
+                            <td><span class="badge bg-danger">Required</span></td>
+                            <td>The question text</td>
+                            <td>What is the capital of Pakistan?</td>
+                        </tr>
+                        <tr>
+                            <td><strong>A</strong></td>
+                            <td><span class="badge bg-danger">Required</span></td>
+                            <td>Choice A</td>
+                            <td>Karachi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B</strong></td>
+                            <td><span class="badge bg-danger">Required</span></td>
+                            <td>Choice B</td>
+                            <td>Lahore</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C</strong></td>
+                            <td><span class="badge bg-danger">Required</span></td>
+                            <td>Choice C</td>
+                            <td>Islamabad</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D</strong></td>
+                            <td><span class="badge bg-danger">Required</span></td>
+                            <td>Choice D</td>
+                            <td>Peshawar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Answer</strong></td>
+                            <td><span class="badge bg-danger">Required</span></td>
+                            <td>Correct answer (A, B, C, or D)</td>
+                            <td>C</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Image</strong></td>
+                            <td><span class="badge bg-secondary">Optional</span></td>
+                            <td>Path to question image</td>
+                            <td>questions/capital.jpg</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Explanation</strong></td>
+                            <td><span class="badge bg-secondary">Optional</span></td>
+                            <td>Explanation for the answer</td>
+                            <td>Islamabad is the capital city of Pakistan.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-lightbulb"></i>
+                <strong>Tip:</strong> The first row should contain column headers. Each subsequent row represents one question.
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Form -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-upload"></i> Upload Excel File</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Quiz Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">Category *</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger">{{ form.category.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-danger">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.excel_file.id_for_label }}" class="form-label">Excel File *</label>
+                    {{ form.excel_file }}
+                    {% if form.excel_file.errors %}
+                        <div class="text-danger">{{ form.excel_file.errors.0 }}</div>
+                    {% endif %}
+                    <div class="form-text">Only .xlsx and .xls files are allowed.</div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> Upload & Create Quiz
+                    </button>
+                    <a href="{% url 'admin_dashboard:quizzes_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-x"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
