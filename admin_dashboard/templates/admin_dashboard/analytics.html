@@ -21,7 +21,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <i class="bi bi-people fs-1 text-primary mb-2"></i>
-                    <h3 class="card-title">{{ total_users }}</h3>
+                    <h3 class="card-title">{{ total_users|default:0 }}</h3>
                     <p class="card-text text-muted">Total Users</p>
                 </div>
             </div>
@@ -30,7 +30,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <i class="bi bi-question-circle fs-1 text-success mb-2"></i>
-                    <h3 class="card-title">{{ total_quizzes }}</h3>
+                    <h3 class="card-title">{{ total_quizzes|default:0 }}</h3>
                     <p class="card-text text-muted">Total Quizzes</p>
                 </div>
             </div>
@@ -39,7 +39,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <i class="bi bi-bar-chart fs-1 text-warning mb-2"></i>
-                    <h3 class="card-title">{{ total_attempts }}</h3>
+                    <h3 class="card-title">{{ total_attempts|default:0 }}</h3>
                     <p class="card-text text-muted">Total Attempts</p>
                 </div>
             </div>
@@ -48,7 +48,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <i class="bi bi-trophy fs-1 text-danger mb-2"></i>
-                    <h3 class="card-title">{{ avg_score|floatformat:1 }}%</h3>
+                    <h3 class="card-title">{{ avg_score|default:0|floatformat:1 }}%</h3>
                     <p class="card-text text-muted">Average Score</p>
                 </div>
             </div>
@@ -141,24 +141,24 @@
                             <h6>Quiz Statistics</h6>
                             <ul class="list-unstyled">
                                 <li><strong>Most Attempted Quiz:</strong> {{ most_attempted_quiz.title|default:"N/A" }}</li>
-                                <li><strong>Highest Average Score:</strong> {{ highest_avg_quiz.title|default:"N/A" }} ({{ highest_avg_score|floatformat:1 }}%)</li>
-                                <li><strong>Lowest Average Score:</strong> {{ lowest_avg_quiz.title|default:"N/A" }} ({{ lowest_avg_score|floatformat:1 }}%)</li>
+                                <li><strong>Highest Average Score:</strong> {{ highest_avg_quiz.title|default:"N/A" }} ({{ highest_avg_score|default:0|floatformat:1 }}%)</li>
+                                <li><strong>Lowest Average Score:</strong> {{ lowest_avg_quiz.title|default:"N/A" }} ({{ lowest_avg_score|default:0|floatformat:1 }}%)</li>
                             </ul>
                         </div>
                         <div class="col-md-4">
                             <h6>User Engagement</h6>
                             <ul class="list-unstyled">
-                                <li><strong>Active Users (Last 30 days):</strong> {{ active_users_30 }}</li>
-                                <li><strong>Active Users (Last 7 days):</strong> {{ active_users_7 }}</li>
-                                <li><strong>Average Attempts per User:</strong> {{ avg_attempts_per_user|floatformat:1 }}</li>
+                                <li><strong>Active Users (Last 30 days):</strong> {{ active_users_30|default:0 }}</li>
+                                <li><strong>Active Users (Last 7 days):</strong> {{ active_users_7|default:0 }}</li>
+                                <li><strong>Average Attempts per User:</strong> {{ avg_attempts_per_user|default:0|floatformat:1 }}</li>
                             </ul>
                         </div>
                         <div class="col-md-4">
                             <h6>Performance Insights</h6>
                             <ul class="list-unstyled">
-                                <li><strong>Pass Rate (70%+):</strong> {{ pass_rate|floatformat:1 }}%</li>
-                                <li><strong>Excellent Rate (90%+):</strong> {{ excellent_rate|floatformat:1 }}%</li>
-                                <li><strong>Fail Rate (<40%):</strong> {{ fail_rate|floatformat:1 }}%</li>
+                                <li><strong>Pass Rate (70%+):</strong> {{ pass_rate|default:0|floatformat:1 }}%</li>
+                                <li><strong>Excellent Rate (90%+):</strong> {{ excellent_rate|default:0|floatformat:1 }}%</li>
+                                <li><strong>Fail Rate (&lt;40%):</strong> {{ fail_rate|default:0|floatformat:1 }}%</li>
                             </ul>
                         </div>
                     </div>
@@ -168,105 +168,232 @@
     </div>
 </div>
 
+<!-- Hidden data elements for JavaScript -->
+<script id="analytics-data" type="application/json">
+{
+    "scoreDistribution": {{ score_distribution|default:"[0,0,0,0]"|safe }},
+    "attemptsOverTimeLabels": {{ attempts_over_time_labels|default:"[]"|safe }},
+    "attemptsOverTimeData": {{ attempts_over_time_data|default:"[]"|safe }},
+    "categoryLabels": {{ category_labels|default:"[]"|safe }},
+    "categoryScores": {{ category_scores|default:"[]"|safe }},
+    "totalUsers": {{ total_users|default:0 }},
+    "totalQuizzes": {{ total_quizzes|default:0 }},
+    "totalAttempts": {{ total_attempts|default:0 }},
+    "avgScore": {{ avg_score|default:0|floatformat:1 }},
+    "passRate": {{ pass_rate|default:0|floatformat:1 }},
+    "activeUsers30": {{ active_users_30|default:0 }},
+    "activeUsers7": {{ active_users_7|default:0 }}
+}
+</script>
+
+{% endblock %}
+
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Parse analytics data from JSON
+let analyticsData;
+try {
+    const dataElement = document.getElementById('analytics-data');
+    analyticsData = JSON.parse(dataElement.textContent);
+} catch (error) {
+    console.error('Error parsing analytics data:', error);
+    // Fallback data
+    analyticsData = {
+        scoreDistribution: [0, 0, 0, 0],
+        attemptsOverTimeLabels: [],
+        attemptsOverTimeData: [],
+        categoryLabels: [],
+        categoryScores: [],
+        totalUsers: 0,
+        totalQuizzes: 0,
+        totalAttempts: 0,
+        avgScore: 0,
+        passRate: 0,
+        activeUsers30: 0,
+        activeUsers7: 0
+    };
+}
+
 // Score Distribution Chart
-const scoreDistributionCtx = document.getElementById('scoreDistributionChart').getContext('2d');
-new Chart(scoreDistributionCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Excellent (90%+)', 'Good (70-89%)', 'Average (40-69%)', 'Poor (<40%)'],
-        datasets: [{
-            data: {{ score_distribution|safe }},
-            backgroundColor: [
-                '#28a745',
-                '#ffc107',
-                '#17a2b8',
-                '#dc3545'
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'bottom'
+const scoreDistributionCtx = document.getElementById('scoreDistributionChart');
+if (scoreDistributionCtx) {
+    new Chart(scoreDistributionCtx.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Excellent (90%+)', 'Good (70-89%)', 'Average (40-69%)', 'Poor (<40%)'],
+            datasets: [{
+                data: analyticsData.scoreDistribution,
+                backgroundColor: [
+                    '#28a745',
+                    '#ffc107',
+                    '#17a2b8',
+                    '#dc3545'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
             }
         }
-    }
-});
+    });
+}
 
 // Attempts Over Time Chart
-const attemptsOverTimeCtx = document.getElementById('attemptsOverTimeChart').getContext('2d');
-new Chart(attemptsOverTimeCtx, {
-    type: 'line',
-    data: {
-        labels: {{ attempts_over_time_labels|safe }},
-        datasets: [{
-            label: 'Attempts',
-            data: {{ attempts_over_time_data|safe }},
-            borderColor: '#007bff',
-            backgroundColor: 'rgba(0, 123, 255, 0.1)',
-            tension: 0.1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true
+const attemptsOverTimeCtx = document.getElementById('attemptsOverTimeChart');
+if (attemptsOverTimeCtx) {
+    new Chart(attemptsOverTimeCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: analyticsData.attemptsOverTimeLabels,
+            datasets: [{
+                label: 'Attempts',
+                data: analyticsData.attemptsOverTimeData,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.4,
+                fill: true,
+                borderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#007bff',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
             }
         }
-    }
-});
+    });
+}
 
 // Category Performance Chart
-const categoryPerformanceCtx = document.getElementById('categoryPerformanceChart').getContext('2d');
-new Chart(categoryPerformanceCtx, {
-    type: 'bar',
-    data: {
-        labels: {{ category_labels|safe }},
-        datasets: [{
-            label: 'Average Score (%)',
-            data: {{ category_scores|safe }},
-            backgroundColor: 'rgba(40, 167, 69, 0.8)',
-            borderColor: '#28a745',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100
+const categoryPerformanceCtx = document.getElementById('categoryPerformanceChart');
+if (categoryPerformanceCtx) {
+    new Chart(categoryPerformanceCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: analyticsData.categoryLabels,
+            datasets: [{
+                label: 'Average Score (%)',
+                data: analyticsData.categoryScores,
+                backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                borderColor: '#28a745',
+                borderWidth: 2,
+                borderRadius: 5,
+                barPercentage: 0.7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Average Score: ${context.parsed.y.toFixed(1)}%`;
+                        }
+                    }
+                }
             }
         }
-    }
-});
+    });
+}
 
 // Export Report Function
 function exportReport() {
-    // Create a simple CSV export
-    const csvContent = "data:text/csv;charset=utf-8,"
-        + "Metric,Value\n"
-        + "Total Users," + {{ total_users }} + "\n"
-        + "Total Quizzes," + {{ total_quizzes }} + "\n"
-        + "Total Attempts," + {{ total_attempts }} + "\n"
-        + "Average Score," + {{ avg_score|floatformat:1 }} + "%\n"
-        + "Pass Rate," + {{ pass_rate|floatformat:1 }} + "%\n"
-        + "Active Users (30 days)," + {{ active_users_30 }} + "\n"
-        + "Active Users (7 days)," + {{ active_users_7 }} + "\n";
+    try {
+        // Create a comprehensive CSV export
+        const csvContent = "data:text/csv;charset=utf-8,"
+            + "Metric,Value\n"
+            + "Total Users," + analyticsData.totalUsers + "\n"
+            + "Total Quizzes," + analyticsData.totalQuizzes + "\n"
+            + "Total Attempts," + analyticsData.totalAttempts + "\n"
+            + "Average Score," + analyticsData.avgScore + "%\n"
+            + "Pass Rate," + analyticsData.passRate + "%\n"
+            + "Active Users (30 days)," + analyticsData.activeUsers30 + "\n"
+            + "Active Users (7 days)," + analyticsData.activeUsers7 + "\n\n"
+            + "Score Distribution\n"
+            + "Excellent (90%+)," + analyticsData.scoreDistribution[0] + "\n"
+            + "Good (70-89%)," + analyticsData.scoreDistribution[1] + "\n"
+            + "Average (40-69%)," + analyticsData.scoreDistribution[2] + "\n"
+            + "Poor (<40%)," + analyticsData.scoreDistribution[3] + "\n";
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "analytics_report.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "analytics_report_" + new Date().toISOString().split('T')[0] + ".csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error exporting report:', error);
+        alert('Error exporting report. Please try again.');
+    }
 }
 </script>
-{% endblock %}
 {% endblock %}
