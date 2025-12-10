@@ -36,9 +36,9 @@ SECRET_KEY = env('SECRET_KEY', default='unsafe-dev-secret')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "mdcatexpert.up.railway.app", "www.mdcatxpert.com", ".railway.app", ".vercel.app"] 
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "mdcatexpert.up.railway.app", "www.mdcatxpert.com", ".railway.app", ".vercel.app", ".now.sh"] 
 
-CSRF_TRUSTED_ORIGINS=["https://mdcatxpert.up.railway.app","https://mdcatxpert.com", "https://*.railway.app", "https://*.vercel.app"]
+CSRF_TRUSTED_ORIGINS=["https://mdcatxpert.up.railway.app","https://mdcatxpert.com", "https://*.railway.app", "https://*.vercel.app", "https://*.now.sh"]
 
 # Security settings for production
 if not DEBUG:
@@ -103,30 +103,28 @@ WSGI_APPLICATION = 'MarmaladeTech.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Database configuration
-# Support DATABASE_URL (recommended) or individual PG vars. Fallback to SQLite when DEBUG is True.
+# Support DATABASE_URL (recommended) or individual PG vars. Fallback to SQLite when DEBUG is True and DATABASE_URL not set.
 DATABASE_URL = env('DATABASE_URL', default=None)
 if DATABASE_URL:
     # django-environ will parse DATABASE_URL into a Django DATABASES config
     DATABASES = {
         'default': env.db(),
     }
-elif DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+    # Add Supabase-specific connection options
+    DATABASES['default']['OPTIONS'] = {
+        'connect_timeout': 10,
+        'options': '-c search_path=public',
     }
 else:
-    # legacy explicit PG vars (if you prefer these instead of DATABASE_URL)
+    # legacy explicit PG vars
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env('PGDATABASE', default=''),
-            'USER': env('PGUSER', default=''),
+            'NAME': env('PGDATABASE', default='railway'),
+            'USER': env('PGUSER', default='postgres'),
             'PASSWORD': env('PGPASSWORD', default=''),
             'HOST': env('PGHOST', default=''),
-            'PORT': env('PGPORT', default=''),
+            'PORT': env('PGPORT', default='5432'),
         }
     }
 

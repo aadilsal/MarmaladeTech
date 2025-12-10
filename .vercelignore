@@ -1,0 +1,15 @@
+benv/
+*.pyc
+__pycache__/
+db.sqlite3
+.env
+*.log
+media/
+staticfiles/
+.git/
+.vscode/
+*.md
+Dockerfile
+entrypoint.sh
+deploy.sh
+deploy.ps1
