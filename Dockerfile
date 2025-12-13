@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/
 
-# collect static files at build time
-RUN python manage.py collectstatic --noinput
+# Note: Do NOT run collectstatic at build time.
+# Railway runs collectstatic via startCommand with env vars available.
 
 # copy entrypoint and make it executable
 COPY ./entrypoint.sh /app/entrypoint.sh
