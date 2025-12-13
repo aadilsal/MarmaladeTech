@@ -14,8 +14,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import environ
 import os
 
-env=environ.Env(
-    DEBUG=(bool,True)
+env = environ.Env(
+    DEBUG=(bool, False)
 )
 
 from pathlib import Path
@@ -31,14 +31,14 @@ environ.Env.read_env(os.path.join(BASE_DIR,'.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Provide a safe default for development. In production, set SECRET_KEY env var.
-SECRET_KEY = env('SECRET_KEY', default='unsafe-dev-secret')
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "mdcatexpert.up.railway.app", "www.mdcatxpert.com", ".railway.app", ".vercel.app"] 
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
 
-CSRF_TRUSTED_ORIGINS=["https://mdcatxpert.up.railway.app","https://mdcatxpert.com", "https://*.railway.app", "https://*.vercel.app"]
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
 
 # Security settings for production
 if not DEBUG:
@@ -63,7 +63,6 @@ INSTALLED_APPS = [
     'account',
     'base',
     'quiz',
-    'admin_dashboard',
     'django_ckeditor_5'
 ]
 
@@ -104,12 +103,10 @@ WSGI_APPLICATION = 'mdcat_expert.wsgi.application'
 
 # Database configuration
 # Support DATABASE_URL (recommended) or individual PG vars. Fallback to SQLite when DEBUG is True.
+import dj_database_url
 DATABASE_URL = env('DATABASE_URL', default=None)
 if DATABASE_URL:
-    # django-environ will parse DATABASE_URL into a Django DATABASES config
-    DATABASES = {
-        'default': env.db(),
-    }
+    DATABASES = {'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)}
 elif DEBUG:
     DATABASES = {
         'default': {
@@ -118,17 +115,8 @@ elif DEBUG:
         }
     }
 else:
-    # legacy explicit PG vars (if you prefer these instead of DATABASE_URL)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env('PGDATABASE', default=''),
-            'USER': env('PGUSER', default=''),
-            'PASSWORD': env('PGPASSWORD', default=''),
-            'HOST': env('PGHOST', default=''),
-            'PORT': env('PGPORT', default=''),
-        }
-    }
+    # No DATABASE_URL and not DEBUG: fail fast to avoid misconfigured prod
+    raise RuntimeError("DATABASE_URL is required in production")
 
 
 # Password validation
