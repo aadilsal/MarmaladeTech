@@ -107,16 +107,32 @@ import dj_database_url
 DATABASE_URL = env('DATABASE_URL', default=None)
 if DATABASE_URL:
     DATABASES = {'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)}
-elif DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
 else:
-    # No DATABASE_URL and not DEBUG: fail fast to avoid misconfigured prod
-    raise RuntimeError("DATABASE_URL is required in production")
+    # Check for custom SQLite path (e.g., for Fly.io volumes)
+    SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH')
+    if SQLITE_DB_PATH:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': Path(SQLITE_DB_PATH),
+            }
+        }
+    elif DEBUG:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+    else:
+        # No DATABASE_URL and not DEBUG: fail fast to avoid misconfigured prod
+        raise RuntimeError("DATABASE_URL or SQLITE_DB_PATH is required in production")
+
+# Auto-configure CSRF for Fly.io
+FLY_APP_NAME = os.getenv('FLY_APP_NAME')
+if FLY_APP_NAME:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{FLY_APP_NAME}.fly.dev')
+
 
 
 # Password validation
