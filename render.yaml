@@ -24,3 +24,5 @@ services:
         value: "admin@example.com"
       - key: DJANGO_SUPERUSER_PASSWORD
         generateValue: true
+      - key: CLOUDINARY_URL
+        sync: false
