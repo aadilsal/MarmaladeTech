@@ -59,7 +59,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'account',
     'base',
     'quiz',
@@ -179,8 +181,12 @@ STATICFILES_DIRS = [
 # Use WhiteNoise compressed manifest storage for efficient static serving in production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_URL='media/'
-MEDIA_ROOT=BASE_DIR/'media'
+MEDIA_URL = '/media/'  # or 'https://res.cloudinary.com/dgueqqvdk/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Cloudinary Storage
+# Credentials are read from CLOUDINARY_URL environment variable
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
