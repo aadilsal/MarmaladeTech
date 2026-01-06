@@ -135,6 +135,12 @@ FLY_APP_NAME = os.getenv('FLY_APP_NAME')
 if FLY_APP_NAME:
     CSRF_TRUSTED_ORIGINS.append(f'https://{FLY_APP_NAME}.fly.dev')
 
+# Auto-configure for Render
+RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
+
 
 
 # Password validation
