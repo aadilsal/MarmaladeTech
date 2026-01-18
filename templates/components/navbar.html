@@ -3,9 +3,8 @@
         <a class="navbar-brand fw-bold" href="{% url 'home' %}">
             <i class="bi bi-mortarboard-fill me-2"></i>MDCAT EXPERT
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -31,21 +30,39 @@
                     <a class="nav-link" href="{% url 'contact' %}">Contact</a>
                 </li>
             </ul>
-            <form class="d-flex me-3" role="search" method="GET" action="{% url 'search-users' %}" >
-                <input class="form-control me-2" type="text" name="q" placeholder="Search users" aria-label="Search">
-                <button class="btn btn-outline-light" type="submit"><i class="bi bi-search"></i></button>
+            <form class="d-flex me-2" role="search" method="GET" action="{% url 'search-users' %}">
+                <input class="form-control me-2" type="text" name="q" placeholder="Search users"
+                    aria-label="Search users">
+                <button class="btn btn-outline-light" type="submit" aria-label="Search">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                </button>
             </form>
+
+            <!-- Theme Toggle Button -->
+            <button type="button" class="theme-toggle me-2" id="themeToggle" aria-label="Toggle dark mode"
+                title="Toggle dark/light mode">
+                <i class="bi bi-moon-fill" aria-hidden="true"></i>
+                <i class="bi bi-sun-fill" aria-hidden="true"></i>
+            </button>
+
             {% if request.user.is_authenticated %}
             <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{request.user.profile.profile_img.url}}" class="rounded-circle me-2" width="32" height="32" alt="profile_img">
+                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-white"
+                    id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{{request.user.profile.profile_img.url}}" class="rounded-circle me-2" width="32"
+                        height="32" alt="{{request.user.username}}'s profile picture">
                     <span class="d-none d-md-inline">{{request.user.username}}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                    <li><a class="dropdown-item" href="{% url 'profile' request.user.username %}"><i class="bi bi-person me-2"></i>Profile</a></li>
-                    <li><a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil me-2"></i>Edit Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                    <li><a class="dropdown-item" href="{% url 'profile' request.user.username %}"><i
+                                class="bi bi-person me-2" aria-hidden="true"></i>Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil me-2"
+                                aria-hidden="true"></i>Edit Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"
+                                aria-hidden="true"></i>Logout</a></li>
                 </ul>
             </div>
             {% else %}

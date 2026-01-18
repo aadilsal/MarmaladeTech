@@ -325,6 +325,99 @@ html {
     }
 }
 
+/* Quiz Meta Utility */
+.quiz-meta {
+    display: flex;
+    align-items: center;
+}
+
+/* Skip Link for Accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 8px 16px;
+    z-index: 9999;
+    transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Password Toggle Button */
+.input-group .btn-outline-secondary {
+    border-color: var(--color-border);
+}
+
+[data-bs-theme="dark"] .input-group .btn-outline-secondary {
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+[data-bs-theme="dark"] .input-group .btn-outline-secondary:hover {
+    background: var(--color-surface-secondary);
+    color: var(--color-text-primary);
+}
+
+/* Enhanced Mobile Responsive Styles */
+@media (max-width: 575.98px) {
+    /* Navbar mobile improvements */
+    .navbar .navbar-collapse {
+        background: inherit;
+        padding: 1rem 0;
+    }
+    
+    .navbar .nav-link {
+        padding: 0.75rem 0 !important;
+    }
+    
+    .navbar .d-flex.me-2 {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    
+    .navbar .theme-toggle {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    
+    /* Quiz page mobile */
+    .timer-display {
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    /* Auth forms mobile */
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem !important;
+    }
+    
+    /* Table mobile scroll indicator */
+    .table-responsive::after {
+        content: '← Scroll →';
+        display: block;
+        text-align: center;
+        color: var(--color-text-muted);
+        font-size: 0.75rem;
+        padding-top: 0.5rem;
+    }
+}
+
+/* Tablet improvements */
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .navbar .d-flex.me-2 {
+        margin-right: 0.5rem;
+    }
+    
+    .stats-card .card-body {
+        padding: 1rem;
+    }
+}
+
 /* Quiz Page Styles */
 .quiz-container {
     max-width: 800px;

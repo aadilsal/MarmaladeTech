@@ -204,6 +204,9 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Use the app's login URL (account app exposes login at /user/login)
+LOGIN_URL = '/user/login'
+
 # CKEditor 5 configuration
 customColorPalette = [
     {"color": "hsl(4, 90%, 58%)", "label": "Red"},

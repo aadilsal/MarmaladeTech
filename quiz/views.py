@@ -200,6 +200,8 @@ def quiz_view(request, quiz_id):
         return render(request, 'quiz.html', context)
 
     # For GET request, display the quiz without explanations
+    # For GET request, display the quiz without explanations
+    # Default context for GET (no explanations)
     context = {
         "user_profile": user_profile,
         "quiz": quiz,
@@ -207,6 +209,20 @@ def quiz_view(request, quiz_id):
         "show_explanation": False,  # Do not show explanations initially
         "user_answers": {}  # Empty dict for GET
     }
+
+    # If user requested a review or has a previous submission for this quiz,
+    # render the quiz with explanations visible. This allows the "Review" button
+    # to link back to the quiz page and show explanations for past attempts.
+    review_flag = request.GET.get('review')
+    if review_flag == '1' or QuizSubmission.objects.filter(user=request.user, quiz=quiz).exists():
+        latest_submission = QuizSubmission.objects.filter(user=request.user, quiz=quiz).order_by('-submitted_at').first()
+        context.update({
+            "show_explanation": True,
+            "score": latest_submission.score if latest_submission else None,
+            "total_questions": total_questions,
+            "user_answers": {}  # we don't store per-question answers for past submissions
+        })
+    logger.debug(f"Quiz view context: {context.keys()}")
     return render(request, 'quiz.html', context)
 
 

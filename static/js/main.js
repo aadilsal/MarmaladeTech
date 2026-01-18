@@ -1,6 +1,21 @@
 // Main JavaScript for MDCAT Expert
 
+// Initialize theme before DOM loads to prevent flash
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize dark mode toggle
+    initializeThemeToggle();
+    
     // Initialize navbar scroll effect
     initializeNavbarScroll();
 
@@ -13,6 +28,49 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add loading animation
     addLoadingAnimation();
 });
+
+// Theme Toggle Functionality
+function initializeThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Announce theme change to screen readers
+            const message = `Switched to ${newTheme} mode`;
+            announceToScreenReader(message);
+        });
+    }
+    
+    // Listen for system preference changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        // Only auto-switch if user hasn't set a preference
+        if (!localStorage.getItem('theme')) {
+            const newTheme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+        }
+    });
+}
+
+// Announce changes to screen readers
+function announceToScreenReader(message) {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('role', 'status');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.className = 'visually-hidden';
+    announcement.textContent = message;
+    document.body.appendChild(announcement);
+    
+    setTimeout(() => {
+        document.body.removeChild(announcement);
+    }, 1000);
+}
 
 // Navbar Scroll Effect
 function initializeNavbarScroll() {

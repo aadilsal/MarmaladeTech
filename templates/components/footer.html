@@ -3,12 +3,25 @@
     <div class="row">
       <div class="col-lg-4 mb-4">
         <h5 class="fw-bold mb-3">MDCAT EXPERT</h5>
-        <p class="mb-3">Your ultimate companion for MDCAT preparation. Practice with real questions, track your progress, and achieve your medical school dreams.</p>
+        <p class="mb-3">Your ultimate companion for MDCAT preparation. Practice with real questions, track your
+          progress, and achieve your medical school dreams.</p>
         <div class="social-links">
-          <a href="#" class="text-light me-3" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-light me-3" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
-          <a href="#" class="text-light me-3" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="text-light me-3" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <a href="#" class="text-light me-3" aria-label="Follow us on Facebook">
+            <i class="bi bi-facebook" aria-hidden="true"></i>
+            <span class="visually-hidden">Facebook</span>
+          </a>
+          <a href="#" class="text-light me-3" aria-label="Follow us on Twitter">
+            <i class="bi bi-twitter" aria-hidden="true"></i>
+            <span class="visually-hidden">Twitter</span>
+          </a>
+          <a href="#" class="text-light me-3" aria-label="Follow us on Instagram">
+            <i class="bi bi-instagram" aria-hidden="true"></i>
+            <span class="visually-hidden">Instagram</span>
+          </a>
+          <a href="#" class="text-light me-3" aria-label="Follow us on LinkedIn">
+            <i class="bi bi-linkedin" aria-hidden="true"></i>
+            <span class="visually-hidden">LinkedIn</span>
+          </a>
         </div>
       </div>
       <div class="col-lg-2 col-md-4 mb-4">
@@ -16,7 +29,8 @@
         <ul class="list-unstyled">
           <li class="mb-2"><a href="{% url 'home' %}" class="text-light text-decoration-none">Home</a></li>
           <li class="mb-2"><a href="{% url 'all_quiz' %}" class="text-light text-decoration-none">Quiz</a></li>
-          <li class="mb-2"><a href="{% url 'leaderboard' %}" class="text-light text-decoration-none">Leaderboard</a></li>
+          <li class="mb-2"><a href="{% url 'leaderboard' %}" class="text-light text-decoration-none">Leaderboard</a>
+          </li>
           <li class="mb-2"><a href="{% url 'blogs' %}" class="text-light text-decoration-none">Blog</a></li>
           <li class="mb-2"><a href="{% url 'about' %}" class="text-light text-decoration-none">About Us</a></li>
         </ul>
@@ -26,16 +40,19 @@
         <ul class="list-unstyled">
           <li class="mb-2"><a href="{% url 'contact' %}" class="text-light text-decoration-none">Contact Us</a></li>
           <li class="mb-2"><a href="#" class="text-light text-decoration-none">Help Center</a></li>
-          <li class="mb-2"><a href="{% url 'terms_conditions' %}" class="text-light text-decoration-none">Terms of Service</a></li>
+          <li class="mb-2"><a href="{% url 'terms_conditions' %}" class="text-light text-decoration-none">Terms of
+              Service</a></li>
           <li class="mb-2"><a href="#" class="text-light text-decoration-none">Privacy Policy</a></li>
         </ul>
       </div>
       <div class="col-lg-4 mb-4">
         <h6 class="fw-bold mb-3">Stay Connected</h6>
         <p class="mb-3">Get the latest updates on MDCAT tips and platform features.</p>
-        <form class="newsletter-form-footer">
+        <form class="newsletter-form-footer" aria-label="Newsletter subscription">
           <div class="input-group">
-            <input type="email" class="form-control" placeholder="Your email" aria-label="Email for newsletter">
+            <label for="footer-newsletter-email" class="visually-hidden">Email address</label>
+            <input type="email" id="footer-newsletter-email" class="form-control" placeholder="Your email"
+              aria-label="Email for newsletter" autocomplete="email" required>
             <button class="btn btn-primary" type="submit">Subscribe</button>
           </div>
         </form>
@@ -44,10 +61,11 @@
     <hr class="my-4">
     <div class="row align-items-center">
       <div class="col-md-6">
-        <p class="mb-0">&copy; 2024 MDCAT EXPERT. All rights reserved.</p>
+        <p class="mb-0">&copy; {% now "Y" %} MDCAT EXPERT. All rights reserved.</p>
       </div>
       <div class="col-md-6 text-md-end">
-        <small class="text-muted">Made with <i class="bi bi-heart-fill text-danger"></i> for future doctors</small>
+        <small class="text-muted">Made with <i class="bi bi-heart-fill text-danger" aria-hidden="true"></i><span
+            class="visually-hidden">love</span> for future doctors</small>
       </div>
     </div>
   </div>
