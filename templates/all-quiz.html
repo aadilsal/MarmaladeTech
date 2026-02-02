@@ -1,97 +1,153 @@
 {% extends 'index.html' %}
+{% load static %}
 {% block title %}All Quizzes - MDCAT Expert{% endblock title %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-12">
-            <div class="text-center mb-5">
-                <h1 class="display-4 fw-bold mb-3">
-                    <i class="bi bi-journal-check me-3 text-primary"></i>All Quizzes
-                </h1>
-                <p class="lead text-muted">Choose from our comprehensive collection of MDCAT practice tests</p>
+<div class="container-fluid bg-surface-2 min-vh-100 py-5">
+    <div class="container py-4">
+        <!-- Page Header -->
+        <div class="text-center mb-5 fade-in-up">
+            <div class="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-3">
+                <i data-lucide="book-open" class="me-1" style="width: 16px; height: 16px;"></i>
+                Practice Tests
             </div>
+            <h1 class="display-4 fw-bold mb-3">
+                <span class="text-gradient">All Quizzes</span>
+            </h1>
+            <p class="lead text-muted">Choose from our comprehensive collection of MDCAT practice tests</p>
+        </div>
 
-            <!-- Category Filters -->
-            <div class="mb-4">
-                <div class="d-flex flex-wrap justify-content-center gap-2">
-                    <a href="{% url 'all_quiz' %}" class="btn btn-outline-primary btn-sm active">All Quizzes</a>
-                    {% for category in categories %}
-                    <a href="{% url 'search' category.name %}" class="btn btn-outline-primary btn-sm">{{ category.name
-                        }}</a>
-                    {% endfor %}
-                </div>
+        <!-- Category Filters -->
+        <div class="mb-4 fade-in-up" style="animation-delay: 0.1s;">
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a href="{% url 'all_quiz' %}" class="btn btn-primary rounded-pill px-4">
+                    <i data-lucide="grid-3x3" size="16" class="me-1"></i>
+                    All Quizzes
+                </a>
+                {% for category in categories %}
+                <a href="{% url 'search' category.name %}" class="btn btn-outline-primary rounded-pill px-4">
+                    {{ category.name }}
+                </a>
+                {% endfor %}
             </div>
+        </div>
 
-            <!-- Search Form -->
-            <div class="row justify-content-center mb-5">
-                <div class="col-md-6">
-                    <form class="d-flex" role="search" method="get" action="{% url 'search' ' ' %}">
-                        <input name="q" class="form-control form-control-lg me-2" type="search"
-                            placeholder="Search quizzes..." aria-label="Search">
-                        <button class="btn btn-primary btn-lg" type="submit">
-                            <i class="bi bi-search me-2"></i>Search
+        <!-- Search Form -->
+        <div class="row justify-content-center mb-5 fade-in-up" style="animation-delay: 0.2s;">
+            <div class="col-md-8 col-lg-6">
+                <form class="position-relative" role="search" method="get" action="{% url 'search' ' ' %}">
+                    <div class="input-group input-group-lg shadow-sm">
+                        <span class="input-group-text bg-white border-end-0 ps-4">
+                            <i data-lucide="search" size="20" class="text-muted"></i>
+                        </span>
+                        <input name="q" class="form-control border-start-0 ps-2" type="search"
+                            placeholder="Search quizzes by title or subject..." aria-label="Search">
+                        <button class="btn btn-primary px-4" type="submit">
+                            Search
                         </button>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <!-- Quiz Grid -->
-            <div class="row g-4">
-                {% if quizzes|length > 0 %}
-                {% for quiz in quizzes %}
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm quiz-card animate-on-scroll">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex align-items-start justify-content-between mb-3">
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title fw-bold mb-2">{{ quiz.title }}</h5>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-question-circle me-2 text-primary"></i>
-                                        <span class="badge bg-primary">{{ quiz.question_set.all|length }}
-                                            Questions</span>
-                                    </div>
-                                </div>
-                                <div class="text-muted small">
-                                    <i class="bi bi-clock me-1"></i>{{ quiz.created_at|timesince }} ago
-                                </div>
-                            </div>
-
-                            <p class="card-text text-muted flex-grow-1">{{ quiz.description|truncatewords:20 }}</p>
-
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="quiz-meta">
-                                        <small class="text-muted">
-                                            <i class="bi bi-stopwatch me-1"></i>
-                                            {% widthratio quiz.question_set.all|length 1 1 %} min estimated
-                                        </small>
-                                    </div>
-                                    <a href="{% url 'quiz' quiz.id %}" class="btn btn-primary">
-                                        <i class="bi bi-play-circle me-2"></i>Start Quiz
-                                    </a>
+        <!-- Quiz Grid -->
+        <div class="row g-4">
+            {% if quizzes|length > 0 %}
+            {% for quiz in quizzes %}
+            <div class="col-lg-4 col-md-6 fade-in-up"
+                style="animation-delay: {{ forloop.counter0|add:3 }}00ms;">
+                <div class="card h-100 border-0 shadow-sm hover-lift rounded-3xl overflow-hidden">
+                    <!-- Card Header with Gradient -->
+                    <div class="card-header bg-gradient-primary text-white border-0 p-4">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title fw-bold mb-2">{{ quiz.title }}</h5>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="badge bg-white bg-opacity-25 text-white rounded-pill">
+                                        <i data-lucide="help-circle" size="14" class="me-1"></i>
+                                        {{ quiz.question_set.all|length }} Questions
+                                    </span>
+                                    <span class="badge bg-white bg-opacity-25 text-white rounded-pill">
+                                        <i data-lucide="clock" size="14" class="me-1"></i>
+                                        {% widthratio quiz.question_set.all|length 1 1 %} min
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div class="col-12">
-                    <div class="text-center py-5">
-                        <i class="bi bi-search display-1 text-muted mb-3"></i>
-                        <h4 class="text-muted mb-3">No Quizzes Found</h4>
-                        <p class="text-muted mb-4">Try adjusting your search or browse different categories.</p>
-                        <a href="{% url 'all_quiz' %}" class="btn btn-primary">
-                            <i class="bi bi-arrow-left me-2"></i>View All Quizzes
+
+                    <!-- Card Body -->
+                    <div class="card-body p-4 d-flex flex-column">
+                        <p class="card-text text-muted flex-grow-1 mb-4">
+                            {{ quiz.description|default:"Test your knowledge with this comprehensive quiz."|truncatewords:20 }}
+                        </p>
+
+                        <!-- Quiz Meta Info -->
+                        <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
+                            <div class="d-flex align-items-center gap-2 text-muted small">
+                                <i data-lucide="calendar" size="16"></i>
+                                <span>{{ quiz.created_at|timesince }} ago</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <i data-lucide="star" size="16" class="text-warning" fill="currentColor"></i>
+                                <i data-lucide="star" size="16" class="text-warning" fill="currentColor"></i>
+                                <i data-lucide="star" size="16" class="text-warning" fill="currentColor"></i>
+                                <i data-lucide="star" size="16" class="text-warning" fill="currentColor"></i>
+                                <i data-lucide="star" size="16" class="text-warning"></i>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        {% if quiz.id in taken_quiz_ids %}
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'quiz' quiz.id %}?retake=1" class="btn btn-outline-primary w-100 rounded-pill py-2 hover-scale">
+                                <i data-lucide="repeat" size="18" class="me-2"></i>
+                                Retake Quiz
+                            </a>
+                            <a href="{% url 'quiz' quiz.id %}?review=1" class="btn btn-sm btn-link text-muted text-decoration-none">Review last attempt</a>
+                        </div>
+                        {% else %}
+                        <a href="{% url 'quiz' quiz.id %}" class="btn btn-primary w-100 rounded-pill py-2 hover-scale">
+                            <i data-lucide="play-circle" size="18" class="me-2"></i>
+                            Start Quiz
                         </a>
+                        {% endif %}
                     </div>
                 </div>
-                {% endif %}
             </div>
-
-            <!-- Pagination would go here if needed -->
+            {% endfor %}
+            {% else %}
+            <!-- Empty State -->
+            <div class="col-12">
+                <div class="text-center py-5 fade-in-up">
+                    <div class="mb-4">
+                        <i data-lucide="search-x" class="text-muted" size="96"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">No Quizzes Found</h4>
+                    <p class="text-muted mb-4">Try adjusting your search or browse different categories.</p>
+                    <a href="{% url 'all_quiz' %}" class="btn btn-primary btn-lg px-5 rounded-pill">
+                        <i data-lucide="arrow-left" class="me-2" size="20"></i>
+                        View All Quizzes
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </div>
+
+
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        lucide.createIcons();
+    });
+</script>
+
+<style>
+    .bg-primary-light {
+        background-color: var(--primary-lighter);
+    }
+</style>
+
 {% endblock content %}

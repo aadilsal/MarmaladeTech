@@ -3,18 +3,24 @@
 {% block title %}Register - MDCAT Expert{% endblock title %}
 
 {% block content %}
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100">
-    <div class="auth-container p-5 rounded shadow" style="max-width: 450px; width: 100%;">
-        <div class="auth-header text-center mb-4">
-            <h1 class="h3 mb-3">
-                <i class="bi bi-person-plus me-2 text-primary" aria-hidden="true"></i>Sign Up
-            </h1>
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-surface-2 py-5">
+    <div class="auth-container p-5 rounded-2xl shadow-lg bg-white border border-light fade-in-up"
+        style="max-width: 500px; width: 100%;">
+        <div class="auth-header text-center mb-5">
+            <div class="bg-primary-subtle d-inline-flex p-3 rounded-circle mb-3 text-primary">
+                <i data-lucide="user-plus" size="32"></i>
+            </div>
+            <h1 class="h3 fw-bold mb-2">Create Account</h1>
             <p class="text-muted">Join thousands of students preparing for MDCAT success!</p>
         </div>
 
         {% for message in messages %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
+        <div class="alert alert-danger alert-dismissible fade show rounded-xl border-0 bg-danger-subtle text-danger"
+            role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <i data-lucide="alert-circle" size="18"></i>
+                {{ message }}
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
@@ -22,67 +28,77 @@
         <form method="POST" action="">
             {% csrf_token %}
 
-            <div class="mb-3">
-                <label for="email" class="form-label">
-                    <i class="bi bi-envelope me-2" aria-hidden="true"></i>Email Address
-                </label>
-                <input type="email" name="email" class="form-control form-control-lg" id="email"
-                    placeholder="Enter your email" required autocomplete="email">
-                <div class="form-text">We'll never share your email with anyone else.</div>
-            </div>
-
-            <div class="mb-3">
-                <label for="username" class="form-label">
-                    <i class="bi bi-person me-2" aria-hidden="true"></i>Username
-                </label>
-                <input type="text" name="username" class="form-control form-control-lg" id="username"
-                    placeholder="Choose a username" required autocomplete="username">
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">
-                    <i class="bi bi-lock me-2" aria-hidden="true"></i>Password
-                </label>
+            <div class="mb-4">
+                <label for="email" class="form-label fw-medium">Email Address</label>
                 <div class="input-group">
-                    <input type="password" name="password" class="form-control form-control-lg" id="password"
-                        placeholder="Create a password" required autocomplete="new-password">
-                    <button class="btn btn-outline-secondary" type="button" id="togglePassword"
-                        aria-label="Toggle password visibility">
-                        <i class="bi bi-eye" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <div class="form-text">Password must be at least 8 characters long.</div>
-            </div>
-
-            <div class="mb-3">
-                <label for="password2" class="form-label">
-                    <i class="bi bi-lock-fill me-2" aria-hidden="true"></i>Confirm Password
-                </label>
-                <div class="input-group">
-                    <input type="password" name="password2" class="form-control form-control-lg" id="password2"
-                        placeholder="Confirm your password" required autocomplete="new-password">
-                    <button class="btn btn-outline-secondary" type="button" id="togglePassword2"
-                        aria-label="Toggle password visibility">
-                        <i class="bi bi-eye" aria-hidden="true"></i>
-                    </button>
+                    <span class="input-group-text bg-white border-end-0 text-muted ps-3">
+                        <i data-lucide="mail" size="18"></i>
+                    </span>
+                    <input type="email" name="email" class="form-control form-control-lg border-start-0 ps-2" id="email"
+                        placeholder="Enter your email" required autocomplete="email">
                 </div>
             </div>
 
-            <div class="mb-3 form-check">
+            <div class="mb-4">
+                <label for="username" class="form-label fw-medium">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted ps-3">
+                        <i data-lucide="user" size="18"></i>
+                    </span>
+                    <input type="text" name="username" class="form-control form-control-lg border-start-0 ps-2"
+                        id="username" placeholder="Choose a username" required autocomplete="username">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="form-label fw-medium">Password</label>
+                <div class="input-group mb-1">
+                    <span class="input-group-text bg-white border-end-0 text-muted ps-3">
+                        <i data-lucide="lock" size="18"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control form-control-lg border-start-0 ps-2"
+                        id="password" placeholder="Create a password" required autocomplete="new-password">
+                    <button class="btn btn-outline-light border border-start-0 text-muted" type="button"
+                        id="togglePassword" aria-label="Toggle password visibility">
+                        <i data-lucide="eye" size="18"></i>
+                    </button>
+                </div>
+                <div class="form-text text-muted small"><i data-lucide="info" size="12"
+                        class="me-1 inline-block"></i>Must be at least 8 characters long</div>
+            </div>
+
+            <div class="mb-5">
+                <label for="password2" class="form-label fw-medium">Confirm Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted ps-3">
+                        <i data-lucide="check-square" size="18"></i>
+                    </span>
+                    <input type="password" name="password2" class="form-control form-control-lg border-start-0 ps-2"
+                        id="password2" placeholder="Confirm your password" required autocomplete="new-password">
+                    <button class="btn btn-outline-light border border-start-0 text-muted" type="button"
+                        id="togglePassword2" aria-label="Toggle password visibility">
+                        <i data-lucide="eye" size="18"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-4 form-check">
                 <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
-                <label class="form-check-label" for="terms">
-                    I agree to the <a href="{% url 'terms_conditions' %}" target="_blank">Terms & Conditions</a>
+                <label class="form-check-label text-muted" for="terms">
+                    I agree to the <a href="{% url 'terms_conditions' %}" target="_blank"
+                        class="text-primary fw-bold text-decoration-none">Terms & Conditions</a>
                 </label>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                <i class="bi bi-person-plus me-2" aria-hidden="true"></i>Create Account
+            <button type="submit"
+                class="btn btn-primary btn-lg w-100 mb-4 shadow-brand fw-bold rounded-xl py-3 hover-scale transition-transform">
+                Create Account
             </button>
 
             <div class="text-center">
-                <p class="mb-0">
+                <p class="mb-0 text-muted">
                     Already have an account?
-                    <a href="{% url 'login' %}" class="text-primary fw-bold">Sign in here</a>
+                    <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none">Sign in here</a>
                 </p>
             </div>
         </form>
@@ -100,14 +116,33 @@
                 toggle.addEventListener('click', function () {
                     const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
                     password.setAttribute('type', type);
-                    this.querySelector('i').classList.toggle('bi-eye');
-                    this.querySelector('i').classList.toggle('bi-eye-slash');
+
+                    const icon = this.querySelector('i');
+                    const currentIcon = icon.getAttribute('data-lucide');
+                    const newIcon = currentIcon === 'eye' ? 'eye-off' : 'eye';
+
+                    icon.setAttribute('data-lucide', newIcon);
+                    lucide.createIcons();
                 });
             }
         }
 
         setupPasswordToggle('togglePassword', 'password');
         setupPasswordToggle('togglePassword2', 'password2');
+
+        // Input focus effects
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.classList.add('border-primary');
+                if (this.previousElementSibling) this.previousElementSibling.classList.add('border-primary', 'text-primary');
+                if (this.nextElementSibling) this.nextElementSibling.classList.add('border-primary');
+            });
+            input.addEventListener('blur', function () {
+                this.classList.remove('border-primary');
+                if (this.previousElementSibling) this.previousElementSibling.classList.remove('border-primary', 'text-primary');
+                if (this.nextElementSibling) this.nextElementSibling.classList.remove('border-primary');
+            });
+        });
     });
 </script>
 {% endblock content %}

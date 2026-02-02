@@ -3,18 +3,24 @@
 {% block title %}Login - MDCAT Expert{% endblock title %}
 
 {% block content %}
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100">
-    <div class="auth-container p-5 rounded shadow" style="max-width: 400px; width: 100%;">
-        <div class="auth-header text-center mb-4">
-            <h1 class="h3 mb-3">
-                <i class="bi bi-box-arrow-in-right me-2 text-primary" aria-hidden="true"></i>Login
-            </h1>
-            <p class="text-muted">Welcome back! Please sign in to your account.</p>
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-surface-2">
+    <div class="auth-container p-5 rounded-2xl shadow-lg bg-white border border-light fade-in-up"
+        style="max-width: 440px; width: 100%;">
+        <div class="auth-header text-center mb-5">
+            <div class="bg-primary-subtle d-inline-flex p-3 rounded-circle mb-3 text-primary">
+                <i data-lucide="log-in" size="32"></i>
+            </div>
+            <h1 class="h3 fw-bold mb-2">Welcome Back</h1>
+            <p class="text-muted">Please sign in to your account to continue.</p>
         </div>
 
         {% for message in messages %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
+        <div class="alert alert-danger alert-dismissible fade show rounded-xl border-0 bg-danger-subtle text-danger"
+            role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <i data-lucide="alert-circle" size="18"></i>
+                {{ message }}
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
@@ -22,46 +28,53 @@
         <form method="POST" action="">
             {% csrf_token %}
 
-            <div class="mb-3">
-                <label for="username" class="form-label">
-                    <i class="bi bi-person me-2" aria-hidden="true"></i>Username
-                </label>
-                <input type="text" name="username" class="form-control form-control-lg" id="username"
-                    placeholder="Enter your username" required autocomplete="username">
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">
-                    <i class="bi bi-lock me-2" aria-hidden="true"></i>Password
+            <div class="mb-4">
+                <label for="username" class="form-label fw-medium">
+                    Username
                 </label>
                 <div class="input-group">
-                    <input type="password" name="password" class="form-control form-control-lg" id="password"
-                        placeholder="Enter your password" required autocomplete="current-password">
-                    <button class="btn btn-outline-secondary" type="button" id="togglePassword"
-                        aria-label="Toggle password visibility">
-                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    <span class="input-group-text bg-white border-end-0 text-muted ps-3">
+                        <i data-lucide="user" size="18"></i>
+                    </span>
+                    <input type="text" name="username" class="form-control form-control-lg border-start-0 ps-2"
+                        id="username" placeholder="Enter your username" required autocomplete="username">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="password" class="form-label fw-medium mb-0">Password</label>
+                    <a href="#" class="text-decoration-none small text-primary fw-medium">Forgot password?</a>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted ps-3">
+                        <i data-lucide="lock" size="18"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control form-control-lg border-start-0 ps-2"
+                        id="password" placeholder="Enter your password" required autocomplete="current-password">
+                    <button class="btn btn-outline-light border border-start-0 text-muted" type="button"
+                        id="togglePassword" aria-label="Toggle password visibility">
+                        <i data-lucide="eye" size="18"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="mb-3 form-check">
+            <div class="mb-4 form-check">
                 <input type="checkbox" class="form-check-input" id="rememberMe" name="remember_me">
-                <label class="form-check-label" for="rememberMe">
-                    Remember me
+                <label class="form-check-label text-muted" for="rememberMe">
+                    Remember me for 30 days
                 </label>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>Sign In
+            <button type="submit"
+                class="btn btn-primary btn-lg w-100 mb-4 shadow-brand fw-bold rounded-xl py-3 hover-scale transition-transform">
+                Sign In
             </button>
 
             <div class="text-center">
-                <p class="mb-2">
-                    <a href="#" class="text-decoration-none">Forgot your password?</a>
-                </p>
-                <p class="mb-0">
+                <p class="mb-0 text-muted">
                     Don't have an account?
-                    <a href="{% url 'register' %}" class="text-primary fw-bold">Sign up here</a>
+                    <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">Create account</a>
                 </p>
             </div>
         </form>
@@ -77,10 +90,31 @@
             togglePassword.addEventListener('click', function () {
                 const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
                 password.setAttribute('type', type);
-                this.querySelector('i').classList.toggle('bi-eye');
-                this.querySelector('i').classList.toggle('bi-eye-slash');
+
+                // Toggle Lucide icon
+                const icon = this.querySelector('i');
+                const currentIcon = icon.getAttribute('data-lucide');
+                const newIcon = currentIcon === 'eye' ? 'eye-off' : 'eye';
+
+                icon.setAttribute('data-lucide', newIcon);
+                lucide.createIcons();
             });
         }
+
+        // Ensure inputs have proper focus states for parent groups
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.classList.add('border-primary');
+                // find previous sibling input-group-text if exists
+                if (this.previousElementSibling) this.previousElementSibling.classList.add('border-primary', 'text-primary');
+                if (this.nextElementSibling) this.nextElementSibling.classList.add('border-primary');
+            });
+            input.addEventListener('blur', function () {
+                this.classList.remove('border-primary');
+                if (this.previousElementSibling) this.previousElementSibling.classList.remove('border-primary', 'text-primary');
+                if (this.nextElementSibling) this.nextElementSibling.classList.remove('border-primary');
+            });
+        });
     });
 </script>
 {% endblock content %}

@@ -1,34 +1,275 @@
 {% extends 'index.html' %}
-{% block title %}About Us - MDCAT EXPERT{% endblock title%}
+{% load static %}
+{% block title %}About Us - MDCAT Expert{% endblock title%}
 {% block content %}
 
-    <h1 class="display-4 text-center my-5">About Us</h1>
+<!-- Hero Section -->
+<section class="bg-gradient-primary text-white py-5 position-relative overflow-hidden">
+    <div class="container position-relative z-1 py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0 fade-in-up text-center text-lg-start">
+                <div class="badge bg-white bg-opacity-25 text-white px-3 py-2 rounded-pill mb-3">
+                    <i data-lucide="info" class="me-1" style="width: 16px; height: 16px;"></i>
+                    About Us
+                </div>
+                <h1 class="display-3 fw-bold mb-4">Empowering Future Doctors</h1>
+                <p class="lead mb-3">MDCAT Expert is Pakistan's premier online platform dedicated to helping students
+                    achieve their medical school dreams through comprehensive, effective MDCAT preparation.</p>
+                <a href="{% url 'register' %}" class="btn btn-cta btn-lg d-inline-flex align-items-center gap-2">
+                    <i data-lucide="play-circle" size="18"></i> Get Started
+                </a>
+            </div>
 
-
-    <main>
-        <div class="container col-md-8 col-sm-12">
-            <section class="app-description">
-                <h2>Welcome to MDCAT EXPERT</h2>
-                <p>
-                   MDCAT EXPERT is an exciting web app that brings you the latest and hottest quiz topics in the world of
-                    technology.
-                    Sign up now to challenge your knowledge, learn new things, and have fun with our engaging quizzes.
-                </p>
-            </section>
-
-            <section class="how-it-works">
-                <h2>How It Works</h2>
-                <p>
-                   MDCAT EXPERT offers a simple and intuitive user interface that allows you to:
-                </p>
-                <ul>
-                    <li>Sign up and create your personalized account.</li>
-                    <li>Choose from a variety of trending quiz topics in the technology domain.</li>
-                    <li>Participate in time-limited quizzes and answer questions to rank yourself on MDCAT EXPERT.</li>
-                    <li>Track your progress and compete with other tech enthusiasts on the leaderboard.</li>
-                </ul>
-            </section>
         </div>
-    </main>
+    </div>
+</section>
 
-    {% endblock content %}
+<!-- Mission & Vision -->
+<section class="py-5 bg-white">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-6 fade-in-up">
+                <div class="card h-100 border-0 shadow-sm rounded-3xl p-4">
+                    <div class="card-body">
+                        <div class="bg-primary-light text-primary rounded-circle d-inline-flex p-3 mb-3">
+                            <i data-lucide="target" size="32"></i>
+                        </div>
+                        <h3 class="fw-bold mb-3">Our Mission</h3>
+                        <p class="text-muted mb-0">To democratize MDCAT preparation by providing high-quality,
+                            accessible, and effective learning resources to every aspiring medical student in Pakistan,
+                            regardless of their background or location.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 fade-in-up" style="animation-delay: 0.1s;">
+                <div class="card h-100 border-0 shadow-sm rounded-3xl p-4">
+                    <div class="card-body">
+                        <div class="bg-secondary-light text-secondary rounded-circle d-inline-flex p-3 mb-3">
+                            <i data-lucide="eye" size="32"></i>
+                        </div>
+                        <h3 class="fw-bold mb-3">Our Vision</h3>
+                        <p class="text-muted mb-0">To become the leading MDCAT preparation platform in Pakistan,
+                            recognized for our innovative approach, comprehensive content, and proven track record of
+                            student success.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-surface-2">
+    <div class="container py-5">
+        <div class="text-center mb-5 fade-in-up">
+            <h2 class="display-5 fw-bold mb-3">How MDCAT Expert Works</h2>
+            <p class="lead text-muted">A simple, effective approach to MDCAT preparation</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3 fade-in-up" style="animation-delay: 0.1s;">
+                <div class="card h-100 border-0 shadow-sm rounded-3xl text-center p-4">
+                    <div class="card-body">
+                        <div class="bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                            style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">
+                            1
+                        </div>
+                        <h5 class="fw-bold mb-2">Sign Up</h5>
+                        <p class="text-muted small mb-0">Create your free account in seconds</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in-up" style="animation-delay: 0.2s;">
+                <div class="card h-100 border-0 shadow-sm rounded-3xl text-center p-4">
+                    <div class="card-body">
+                        <div class="bg-secondary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                            style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">
+                            2
+                        </div>
+                        <h5 class="fw-bold mb-2">Choose Topics</h5>
+                        <p class="text-muted small mb-0">Select from Biology, Chemistry, Physics, and English</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in-up" style="animation-delay: 0.3s;">
+                <div class="card h-100 border-0 shadow-sm rounded-3xl text-center p-4">
+                    <div class="card-body">
+                        <div class="bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                            style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">
+                            3
+                        </div>
+                        <h5 class="fw-bold mb-2">Practice</h5>
+                        <p class="text-muted small mb-0">Take timed quizzes and track your progress</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in-up" style="animation-delay: 0.4s;">
+                <div class="card h-100 border-0 shadow-sm rounded-3xl text-center p-4">
+                    <div class="card-body">
+                        <div class="bg-warning text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                            style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">
+                            4
+                        </div>
+                        <h5 class="fw-bold mb-2">Excel</h5>
+                        <p class="text-muted small mb-0">Achieve your target score and get admitted</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-5 bg-white">
+    <div class="container py-5">
+        <div class="text-center mb-5 fade-in-up">
+            <h2 class="display-5 fw-bold mb-3">Why Choose MDCAT Expert?</h2>
+            <p class="lead text-muted">What makes us different</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 fade-in-up" style="animation-delay: 0.1s;">
+                <div class="d-flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="bg-primary-light text-primary rounded-circle p-2"
+                            style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="check-circle" size="24"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">Comprehensive Coverage</h5>
+                        <p class="text-muted mb-0">1000+ questions covering all MDCAT subjects with detailed
+                            explanations</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in-up" style="animation-delay: 0.2s;">
+                <div class="d-flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="bg-success-light text-success rounded-circle p-2"
+                            style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="trending-up" size="24"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">Real-Time Tracking</h5>
+                        <p class="text-muted mb-0">Monitor your performance and identify areas for improvement instantly
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in-up" style="animation-delay: 0.3s;">
+                <div class="d-flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="bg-info-light text-info rounded-circle p-2"
+                            style="width: 48px; height: 48px; display: flex; align-items-center; justify-content: center;">
+                            <i data-lucide="users" size="24"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">Community Learning</h5>
+                        <p class="text-muted mb-0">Compete with thousands of students on our leaderboard</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in-up" style="animation-delay: 0.4s;">
+                <div class="d-flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="bg-warning-light text-warning rounded-circle p-2"
+                            style="width: 48px; height: 48px; display: flex; align-items-center; justify-content: center;">
+                            <i data-lucide="smartphone" size="24"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">Mobile Friendly</h5>
+                        <p class="text-muted mb-0">Practice anywhere, anytime on any device</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in-up" style="animation-delay: 0.5s;">
+                <div class="d-flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="bg-danger-light text-danger rounded-circle p-2"
+                            style="width: 48px; height: 48px; display: flex; align-items-center; justify-content: center;">
+                            <i data-lucide="zap" size="24"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">Instant Feedback</h5>
+                        <p class="text-muted mb-0">Get immediate results and explanations after each quiz</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in-up" style="animation-delay: 0.6s;">
+                <div class="d-flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="bg-secondary-light text-secondary rounded-circle p-2"
+                            style="width: 48px; height: 48px; display: flex; align-items-center; justify-content: center;">
+                            <i data-lucide="shield-check" size="24"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">100% Free</h5>
+                        <p class="text-muted mb-0">No hidden costs, no subscriptions - completely free forever</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5 bg-gradient-primary text-white">
+    <div class="container text-center py-4 fade-in-up">
+        <h2 class="display-5 fw-bold mb-3">Ready to Start Your Journey?</h2>
+        <p class="lead mb-4">Join thousands of successful students today</p>
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5 text-primary fw-bold hover-scale">
+            <i data-lucide="user-plus" size="20" class="me-2"></i>
+            Create Free Account
+        </a>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        lucide.createIcons();
+    });
+</script>
+
+<style>
+    .bg-primary-light {
+        background-color: var(--primary-lighter);
+    }
+
+    .bg-secondary-light {
+        background-color: var(--secondary-light);
+    }
+
+    .bg-success-light {
+        background-color: hsl(152, 69%, 90%);
+    }
+
+    .bg-info-light {
+        background-color: hsl(190, 90%, 90%);
+    }
+
+    .bg-warning-light {
+        background-color: hsl(45, 100%, 90%);
+    }
+
+    .bg-danger-light {
+        background-color: hsl(354, 70%, 90%);
+    }
+
+    .text-info {
+        color: var(--info);
+    }
+
+    .text-warning {
+        color: var(--warning);
+    }
+
+    .text-secondary {
+        color: var(--secondary);
+    }
+</style>
+
+{% endblock content %}

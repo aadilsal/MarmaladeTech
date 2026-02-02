@@ -20,58 +20,95 @@ class Category(models.Model):
 
 class Quiz(models.Model):
     title=models.CharField(max_length=255)
-    description=models.TextField()
+    description=models.TextField(blank=True)
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
-    quiz_file=models.FileField(upload_to='quiz/')
+    quiz_file=models.FileField(upload_to='quiz/', blank=True, null=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
-    class Meta:
-        verbose_name_plural='Quizzes'
-    def __str__(self):
-        return self.title
-
-    #call function when quiz is saved
-    def save(self,*args, **kwargs):
-        super().save(*args,**kwargs)
+    def save(self, *args, **kwargs):
+        """Save the quiz and import questions from the uploaded file when present."""
+        created = self.pk is None
+        super().save(*args, **kwargs)
+        # Import only when a file was uploaded
         if self.quiz_file:
-            self.import_quiz_from_excel()
+            try:
+                self.import_quiz_from_file()
+            except Exception as e:
+                # Re-raise so callers (admin/upload handler) can catch and report
+                raise
 
-    #function to extract excel file 
-    def import_quiz_from_excel(self):
+    def import_quiz_from_file(self):
+        """Import questions from an XLSX/XLS or CSV file attached to this quiz."""
+        import os
+        file_path = self.quiz_file.path
+        _, ext = os.path.splitext(file_path)
+        ext = ext.lower()
+
         try:
-            # Read the Excel file
-            df = pd.read_excel(self.quiz_file.path)
+            if ext in ('.xls', '.xlsx'):
+                df = pd.read_excel(file_path)
+            elif ext == '.csv':
+                df = pd.read_csv(file_path)
+            else:
+                raise ValueError('Unsupported file type for import')
 
-            # Iterate over each row
             for index, row in df.iterrows():
-                # Extract question, choices, and correct answer
-                question_text = row['Question']
-                img_path = row.get('Image', None)  # None if not provided
-                choice1 = row['A']
-                choice2 = row['B']
-                choice3 = row['C']
-                choice4 = row['D']
-                correct_answer = row['Answer']
-                explanation = row.get('Explanation', '')  # Empty if not provided
+                question_text = row.get('Question') or row.get('question')
+                if not question_text or str(question_text).strip() == '':
+                    continue
 
-                # Create or get the question object
+                img_path = row.get('Image') if 'Image' in row else row.get('image') if 'image' in row else None
+                choice1 = row.get('A') or row.get('a')
+                choice2 = row.get('B') or row.get('b')
+                choice3 = row.get('C') or row.get('c')
+                choice4 = row.get('D') or row.get('d')
+                correct_answer = str(row.get('Answer') or row.get('answer') or '').strip()
+                explanation = row.get('Explanation') or row.get('explanation') or ''
+
                 question_obj, created = Question.objects.get_or_create(
                     quiz=self, text=question_text, defaults={'explanation': explanation}
                 )
-                if img_path and isinstance(img_path, str):
+
+                if img_path and isinstance(img_path, str) and img_path.strip():
                     question_obj.image = img_path
                     question_obj.save()
 
-                # Create or get the choice objects
-                Choice.objects.get_or_create(question=question_obj, text=choice1, is_correct=correct_answer == 'A')
-                Choice.objects.get_or_create(question=question_obj, text=choice2, is_correct=correct_answer == 'B')
-                Choice.objects.get_or_create(question=question_obj, text=choice3, is_correct=correct_answer == 'C')
-                Choice.objects.get_or_create(question=question_obj, text=choice4, is_correct=correct_answer == 'D')
-        except Exception as e:
-            # Log the error or handle it appropriately
-            print(f"Error importing quiz from Excel: {e}")
+                # Create or update choices; ensure only one is_correct per question
+                existing_choices = list(Choice.objects.filter(question=question_obj).order_by('id'))
+                # Create missing choices or update existing ones
+                choices_texts = [choice1, choice2, choice3, choice4]
+                for i, text in enumerate(choices_texts):
+                    if text is None:
+                        continue
+                    if i < len(existing_choices):
+                        c = existing_choices[i]
+                        c.text = text
+                        c.is_correct = (correct_answer == chr(65 + i))
+                        c.save()
+                    else:
+                        Choice.objects.create(question=question_obj, text=text, is_correct=(correct_answer == chr(65 + i)))
+
+        except Exception:
+            # Bubble up exception for the view/admin to report and handle
             raise
+
+
+class AdminDailyMetric(models.Model):
+    date = models.DateField(unique=True)
+    total_users = models.IntegerField()
+    total_quizzes = models.IntegerField()
+    total_questions = models.IntegerField()
+    total_submissions = models.IntegerField()
+    submissions_today = models.IntegerField()
+    avg_score = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Admin Daily Metric'
+        verbose_name_plural = 'Admin Daily Metrics'
+
+    def __str__(self):
+        return str(self.date)
 
 
 class Question(models.Model):

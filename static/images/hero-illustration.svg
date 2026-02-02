@@ -1,16 +1,29 @@
 <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="400" height="300" fill="url(#gradient)"/>
-  <circle cx="200" cy="120" r="40" fill="white" opacity="0.9"/>
-  <path d="M160 160 Q200 140 240 160 Q200 180 160 160" fill="white" opacity="0.8"/>
-  <rect x="170" y="180" width="60" height="80" rx="30" fill="white" opacity="0.9"/>
-  <circle cx="190" cy="200" r="8" fill="#667eea"/>
-  <circle cx="210" cy="200" r="8" fill="#667eea"/>
-  <path d="M190 220 Q200 230 210 220" stroke="#667eea" stroke-width="3" fill="none"/>
-  <text x="200" y="280" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="bold">MDCAT Success</text>
+  <rect width="400" height="300" fill="url(#gradient)" rx="20"/>
+
+  <!-- Mortarboard (graduation cap) -->
+  <polygon points="200,60 100,95 200,130 300,95" fill="#0b63d6" />
+  <rect x="170" y="90" width="60" height="12" rx="2" fill="#0b63d6" />
+  <!-- Tassel -->
+  <circle cx="278" cy="96" r="4" fill="#f5c542" />
+  <path d="M278 100 C260 120 240 140 210 160" stroke="#f5c542" stroke-width="3" fill="none" stroke-linecap="round" />
+
+  <!-- White avatar/head and body -->
+  <circle cx="200" cy="160" r="36" fill="white" opacity="0.98"/>
+  <rect x="170" y="200" width="60" height="72" rx="28" fill="white" opacity="0.98"/>
+
+  <!-- Eyes and smile -->
+  <circle cx="188" cy="156" r="6" fill="#007bff"/>
+  <circle cx="212" cy="156" r="6" fill="#007bff"/>
+  <path d="M188 174 Q200 182 212 174" stroke="#007bff" stroke-width="3" fill="none"/>
+
+  <!-- New label tied to site -->
+  <text x="200" y="280" text-anchor="middle" fill="white" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">MDCAT EXPERT</text>
+
   <defs>
     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#007bff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#17a2b8;stop-opacity:1" />
     </linearGradient>
   </defs>
 </svg>

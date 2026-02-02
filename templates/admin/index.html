@@ -1,0 +1,14 @@
+{% extends 'admin/base_site.html' %}
+{% load humanize %}
+
+{% block content %}
+  <h1 class="display-6">Site administration</h1>
+
+  {# default app list #}
+  {% include 'admin/app_list.html' %}
+
+  <hr class="my-4">
+
+  {# Include the merged admin dashboard panels #}
+  {% include 'admin/_dashboard_panels.html' %}
+{% endblock %}

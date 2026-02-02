@@ -125,7 +125,10 @@ def all_quiz_view(request):
     quizzes = Quiz.objects.order_by('-created_at')
     categories = Category.objects.all()
 
-    context = {"user_profile": user_profile, "quizzes": quizzes, "categories": categories}
+    # Determine which quizzes the current user has already taken
+    taken_quiz_ids = list(QuizSubmission.objects.filter(user=request.user).values_list('quiz_id', flat=True))
+
+    context = {"user_profile": user_profile, "quizzes": quizzes, "categories": categories, "taken_quiz_ids": taken_quiz_ids}
 
     return render(request, 'all-quiz.html', context)
 
@@ -168,21 +171,7 @@ def quiz_view(request, quiz_id):
         # Capture user answers
         user_answers = {q.id: request.POST.get(str(q.id)) for q in questions}
 
-        # Check if the user has already submitted
-        if QuizSubmission.objects.filter(user=request.user, quiz=quiz).exists():
-            messages.success(request, f"This time you got {score} out of {total_questions}")
-            context = {
-                "user_profile": user_profile,
-                "quiz": quiz,
-                "questions": questions,
-                "score": score,
-                "total_questions": total_questions,
-                "show_explanation": True,  # Show explanations
-                "user_answers": user_answers
-            }
-            return render(request, 'quiz.html', context)
-
-        # Save the submission
+        # Always save a new submission to allow retakes
         submission = QuizSubmission(user=request.user, quiz=quiz, score=score)
         submission.save()
 
@@ -199,28 +188,44 @@ def quiz_view(request, quiz_id):
         }
         return render(request, 'quiz.html', context)
 
-    # For GET request, display the quiz without explanations
-    # For GET request, display the quiz without explanations
     # Default context for GET (no explanations)
     context = {
         "user_profile": user_profile,
         "quiz": quiz,
         "questions": questions,
         "show_explanation": False,  # Do not show explanations initially
-        "user_answers": {}  # Empty dict for GET
+        "user_answers": {},  # Empty dict for GET
+        "total_questions": total_questions,
     }
 
     # If user requested a review or has a previous submission for this quiz,
     # render the quiz with explanations visible. This allows the "Review" button
     # to link back to the quiz page and show explanations for past attempts.
+    # Support review and retake query flags:
     review_flag = request.GET.get('review')
-    if review_flag == '1' or QuizSubmission.objects.filter(user=request.user, quiz=quiz).exists():
+    retake_flag = request.GET.get('retake')
+
+    # If review requested, show the latest submission and explanations
+    if review_flag == '1':
         latest_submission = QuizSubmission.objects.filter(user=request.user, quiz=quiz).order_by('-submitted_at').first()
         context.update({
             "show_explanation": True,
             "score": latest_submission.score if latest_submission else None,
             "total_questions": total_questions,
-            "user_answers": {}  # we don't store per-question answers for past submissions
+            "user_answers": {}  # per-question answers not stored
+        })
+    # If retake requested, present a clean quiz (no explanations, empty answers)
+    elif retake_flag == '1':
+        context.update({
+            "show_explanation": False,
+            "user_answers": {},
+            # include total_questions in case template uses it elsewhere
+            "total_questions": total_questions
+        })
+    # Otherwise keep default GET behavior (no explanations)
+    else:
+        context.update({
+            "total_questions": total_questions
         })
     logger.debug(f"Quiz view context: {context.keys()}")
     return render(request, 'quiz.html', context)

@@ -33,16 +33,15 @@ def register(request):
                 user=User.objects.create_user(username=username,email=email,password=password)
                 user.save()
 
-                #login User and redirect to profiel.html
-                user_login=auth.authenticate(username=username,password=password)
-                auth.login(request,user_login)
+                # login User and redirect to profile
+                user_login = auth.authenticate(username=username, password=password)
+                auth.login(request, user_login)
 
-                #create profile for new user
-                user_model=User.objects.get(username=username)
-                new_profile=Profile.objects.create(user=user_model)
-                new_profile.save()
+                # Profile is created by the post_save signal; ensure it's present
+                user_model = User.objects.get(username=username)
+                Profile.objects.get_or_create(user=user_model)
 
-                return redirect('profile',user_model.username) #redirect to login
+                return redirect('profile', user_model.username) # redirect to profile
 
         else:
             messages.info(request, "Password Doesnot Match")
@@ -88,9 +87,25 @@ def editProfile(request):
     user_profile = get_object_or_404(Profile, user=user_object)
 
     if request.method == "POST":
-        # Image
-        if request.FILES.get('profile_img') is not None:
-            user_profile.profile_img = request.FILES.get('profile_img')
+        # Handle remove profile image flag
+        if request.POST.get('remove_profile_img') == '1':
+            # Reset to default placeholder
+            user_profile.profile_img = 'user.jpg'
+            user_profile.save()
+
+        # Validate uploaded image client-side should have prevented invalid files, but verify server-side too
+        uploaded = request.FILES.get('profile_img')
+        if uploaded:
+            allowed_types = ['image/jpeg', 'image/png']
+            max_size = 2 * 1024 * 1024  # 2MB
+            if uploaded.content_type not in allowed_types:
+                messages.info(request, 'Invalid image type. Please upload a JPG or PNG file.')
+                return redirect('edit_profile')
+            if uploaded.size > max_size:
+                messages.info(request, 'Image is too large. Maximum size is 2MB.')
+                return redirect('edit_profile')
+
+            user_profile.profile_img = uploaded
             user_profile.save()
 
         # Email

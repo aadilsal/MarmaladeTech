@@ -154,13 +154,21 @@
                                                 <div>
                                                     <strong>{{ submission.quiz.title|truncatewords:6 }}</strong>
                                                     <br>
-                                                    <small class="text-muted">{{ submission.quiz.question_set|length }} questions</small>
+                                                    {% with total=submission.quiz.question_set.count %}
+                                                        <small class="text-muted">{{ total }} question{% if total != 1 %}s{% endif %}</small>
+                                                    {% endwith %}
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                <span class="badge bg-{% if submission.score|mul:100|div:submission.quiz.question_set|length >= 70 %}success{% elif submission.score|mul:100|div:submission.quiz.question_set|length >= 50 %}warning{% else %}danger{% endif %} fs-6">
-                                                    {{ submission.score }}/{{ submission.quiz.question_set|length }}
-                                                </span>
+                                                {% with total=submission.quiz.question_set.count %}
+                                                    {% if total > 0 %}
+                                                        <span class="badge bg-{% if submission.score|mul:100|div:total >= 70 %}success{% elif submission.score|mul:100|div:total >= 50 %}warning{% else %}danger{% endif %} fs-6">
+                                                            {{ submission.score }}/{{ total }}
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary fs-6">N/A</span>
+                                                    {% endif %}
+                                                {% endwith %}
                                             </td>
                                             <td class="text-center">
                                                 <small>{{ submission.submitted_at|date:"M d, Y" }}</small>

@@ -8,74 +8,191 @@
 
   <h1 class="display-4 text-center my-5">Edit Profile</h1>
 
-
   <div class="container">
-    <div class="row row-cols-sm-1 row-cols-lg-3 container">
-      <div class="col-12">
-      </div>
-      <div class="col-12">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="profile-card p-4 p-md-5 shadow-lg rounded-3xl">
 
-        
+          <div class="d-md-flex align-items-start gap-4">
+            <!-- Left: Avatar + quick info -->
+            <div class="avatar-column text-center mb-4 mb-md-0">
+              <div class="avatar-preview shadow-sm mb-3">
+                <img id="avatarImage" src="{{ user_profile.profile_img.url }}" alt="profile-pic" class="rounded-circle">
+              </div>
 
-        <form action="" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="mb-3 d-flex justify-content-center">
-                <img src="{{user_profile.profile_img.url}}" alt="profile-pic" width="150" height="150" class="rounded-circle">
+              <div class="d-grid gap-2">
+                <label class="btn btn-outline-primary btn-sm" for="profileImageInput">
+                  <i data-lucide="image" class="me-1"></i> Change Photo
+                </label>
+                <input type="file" id="profileImageInput" name="profile_img" class="d-none" accept="image/*">
+                <a href="{% url 'profile' user_profile.user.username %}" class="btn btn-link btn-sm">View Profile</a>
+              </div>
             </div>
-            <div class="mb-3">
+
+            <!-- Right: Form -->
+            <div class="flex-grow-1">
+              <form action="" method="POST" enctype="multipart/form-data" class="row g-3">
+                {% csrf_token %}
+
                 {% for message in messages %}
-                <h5 class="text-danger">{{message}}</h5>
+                <div class="col-12">
+                  <div class="alert alert-info">{{ message }}</div>
+                </div>
                 {% endfor %}
+
+                <div class="col-md-6">
+                  <label class="form-label visually-hidden">First Name</label>
+                  <input type="text" name="first_name" value="{{ user_profile.user.first_name }}" class="form-control form-control-lg rounded-lg" placeholder="First Name">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label visually-hidden">Last Name</label>
+                  <input type="text" name="last_name" value="{{ user_profile.user.last_name }}" class="form-control form-control-lg rounded-lg" placeholder="Last Name">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label visually-hidden">Username</label>
+                  <input type="text" name="username" value="{{ user_profile.user.username }}" class="form-control form-control-lg rounded-lg" placeholder="Username">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label visually-hidden">Email</label>
+                  <input type="email" name="email" value="{{ user_profile.user.email }}" class="form-control form-control-lg rounded-lg" placeholder="Email">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label visually-hidden">Location</label>
+                  <input type="text" name="location" value="{{ user_profile.location }}" class="form-control form-control-lg rounded-lg" placeholder="Location">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label visually-hidden">Gender</label>
+                  <select class="form-select form-control-lg rounded-lg" name="gender">
+                    <option {% if user_profile.gender == '' %}selected{% endif %}>Choose Your Gender</option>
+                    <option {% if user_profile.gender == 'Male' %}selected{% endif %} value="Male">Male</option>
+                    <option {% if user_profile.gender == 'Female' %}selected{% endif %} value="Female">Female</option>
+                    <option {% if user_profile.gender == 'Other' %}selected{% endif %} value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label visually-hidden">Bio</label>
+                  <textarea class="form-control form-control-lg rounded-lg" name="bio" rows="4" placeholder="Tell us about yourself...">{{ user_profile.bio }}</textarea>
+                </div>
+
+                <div class="col-12 d-flex gap-3 justify-content-end">
+                  <a href="{% url 'profile' user_profile.user.username %}" class="btn btn-outline-secondary">Cancel</a>
+                  <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+                </div>
+
+              </form>
             </div>
-            <div class="mb-3">
-        
-            <label for="exampleInputImage" class="form-label visually-hidden">Profile Image</label>
-            <input type="file" name="profile_img" class="form-control" id="exampleInputImage">
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputFirstName" class="form-label visually-hidden">First Name</label>
-            <input type="text" name="first_name" value="{{user_profile.user.first_name}}" class="form-control" id="exampleInputFirstName" placeholder="First Name" required>
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputLastName" class="form-label visually-hidden">First Name</label>
-            <input type="text" name="last_name" value="{{user_profile.user.last_name}}" class="form-control" id="exampleInputLastName" placeholder="Last Name" required >
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail2" class="form-label visually-hidden">Email</label>
-            <input type="email"name="email" value="{{user_profile.user.email}}" class="form-control" id="exampleInputEmail2" aria-describedby="emailHelp"
-              placeholder="Email" required >
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label visually-hidden">Username</label>
-            <input type="text" name="username" value="{{user_profile.user.username}}" class="form-control" id="exampleInputUsername1" aria-describedby="emailHelp"
-              placeholder="Username" required >
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputLocation" class="form-label visually-hidden">Location</label>
-            <input type="text" name="location"value="{{user_profile.location}}" class="form-control" id="exampleInputLocation" placeholder="Location" required>
-          </div>
-          
-          <div class="mb-3">
-            <label for="exampleInputGender" class="form-label visually-hidden">Gender</label>
-            <select class="form-select form-control" name="gender" id="exampleInputGender" aria-label="Default select example" required>
-                <option selected>Choose Your Gender</option>
-                <option {% if user_profile.gender == 'Male'%}selected{% endif %} value="Male">Male</option>
-                <option {% if user_profile.gender == 'Female'%}selected{% endif %} value="Female">Female</option>
-                <option {% if user_profile.gender == 'Other'%}selected{% endif %} value="Other">Other</option>
-              </select>
           </div>
 
-          <div class="mb-3">
-            <label for="exampleFormControlTextarea1" class="form-label visually-hidden">Your Bio</label>
-            <textarea class="form-control" name="bio" id="exampleFormControlTextarea1" rows="3" placeholder="Your Bio" required>{{user_profile.bio}}</textarea>
-          </div>
-          
-          <button type="submit" class="btn btn-success">Save Profile</button>
-        </form>
-      </div>
-      <div class="col-12">
+        </div>
       </div>
     </div>
   </div>
+
+  <script>
+    // Image preview with validation, remove & undo
+    const profileInput = document.getElementById('profileImageInput');
+    const avatarImage = document.getElementById('avatarImage');
+    const removeInput = document.createElement('input');
+    removeInput.type = 'hidden';
+    removeInput.name = 'remove_profile_img';
+    removeInput.value = '0';
+
+    // Insert hidden input into the form
+    const formEl = document.querySelector('.profile-card form');
+    if (formEl) formEl.appendChild(removeInput);
+
+    // Store original src for undo
+    const originalSrc = avatarImage ? avatarImage.src : '';
+
+    // Controls
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn btn-outline-danger btn-sm mt-2';
+    removeBtn.textContent = 'Remove Photo';
+
+    const undoBtn = document.createElement('button');
+    undoBtn.type = 'button';
+    undoBtn.className = 'btn btn-outline-secondary btn-sm mt-2 d-none';
+    undoBtn.textContent = 'Undo';
+
+    const avatarColumn = document.querySelector('.avatar-column .d-grid');
+    if (avatarColumn) {
+      avatarColumn.appendChild(removeBtn);
+      avatarColumn.appendChild(undoBtn);
+    }
+
+    function showMessage(text, type = 'danger') {
+      // remove existing
+      const existing = document.querySelector('.profile-card .image-feedback');
+      if (existing) existing.remove();
+
+      const el = document.createElement('div');
+      el.className = `image-feedback alert alert-${type} mt-3`;
+      el.textContent = text;
+      avatarColumn && avatarColumn.appendChild(el);
+    }
+
+    function clearMessage() {
+      const existing = document.querySelector('.profile-card .image-feedback');
+      if (existing) existing.remove();
+    }
+
+    if (profileInput) {
+      profileInput.addEventListener('change', (e) => {
+        clearMessage();
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const allowed = ['image/jpeg','image/png'];
+        const maxSize = 2 * 1024 * 1024; // 2MB
+
+        if (!allowed.includes(file.type)) {
+          showMessage('Invalid file type. Please upload a JPG or PNG image.', 'danger');
+          profileInput.value = '';
+          return;
+        }
+
+        if (file.size > maxSize) {
+          showMessage('Image too large. Maximum size is 2MB.', 'danger');
+          profileInput.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(ev) { avatarImage.src = ev.target.result; };
+        reader.readAsDataURL(file);
+
+        // Since a new file was chosen, clear remove flag and show undo option
+        removeInput.value = '0';
+        undoBtn.classList.remove('d-none');
+      });
+    }
+
+    removeBtn.addEventListener('click', () => {
+      // Set to default placeholder
+      avatarImage.src = originalSrc.includes('user.jpg') ? originalSrc : '/static/images/user.jpg';
+      // Mark for removal on server
+      removeInput.value = '1';
+      // Show undo
+      undoBtn.classList.remove('d-none');
+      showMessage('Profile photo will be removed when you save changes.', 'warning');
+      // Clear file input if any
+      profileInput.value = '';
+    });
+
+    undoBtn.addEventListener('click', () => {
+      // Undo back to original
+      avatarImage.src = originalSrc;
+      removeInput.value = '0';
+      undoBtn.classList.add('d-none');
+      clearMessage();
+    });
+  </script>
 
   {% endblock content %}

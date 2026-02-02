@@ -24,6 +24,13 @@
     <meta name="twitter:image" content="{% static 'images/hero-illustration.svg' %}">
     <title>{% block title %}MDCAT Expert - Master Your Medical Entrance Exam{% endblock title %}</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
     <!-- Schema.org markup -->
     <script type="application/ld+json">
     {
@@ -49,14 +56,27 @@
     }
     </script>
 
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
-        integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Lucide Icons (Replaces Bootstrap Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Motion One (Animation) -->
+    <script src="https://cdn.jsdelivr.net/npm/motion@10.16.2/dist/motion.js"></script>
+
     <link rel="stylesheet" href="{% static 'css/design-system.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        /* Critical overrides to ensure Bootstrap doesn't fight our design system too much */
+        :root {
+            --bs-primary: hsl(211, 100%, 50%);
+            --bs-body-bg: hsl(210, 20%, 98%);
+            --bs-body-font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
 
 <body>
@@ -80,6 +100,13 @@
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     </script>
+
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <script src="{% static 'js/animations.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 

@@ -1,113 +1,263 @@
 {% extends 'index.html' %}
-{% block title %}Dashboard - MDCAT EXPERT{% endblock title%}
+{% block title %}Dashboard - MDCAT Expert{% endblock title%}
 {% block content %}
-    <h1 class="display-4 text-center my-5">Dashboard</h1>
 
-    <!-- Dashboard Code Goes Here -->
+<div class="container-fluid bg-surface-2 min-vh-100 py-5">
     <div class="container">
-        <div class="row">
-            <div class="col-sm-3 mb-3">
-                <div class="card">
-                    <div class="card-body text-center mt-4">
-                        <h1 class="card-title pricing-card-title">{{total_users}}</h1>
-                        <p class="card-text">Active Users</p>
-                        <ul class="list-group mt-5">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Today
-                                <span class="badge bg-primary rounded-pill">{{today_users}}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Gain %
-                                <span class="badge bg-primary rounded-pill">{{gain_users}}</span>
-                            </li>
-                        </ul>
+        <!-- Page Header -->
+        <div class="mb-5 fade-in-up">
+            <h1 class="display-5 fw-bold mb-2">
+                <i data-lucide="layout-dashboard" class="text-primary me-2" size="36"></i>
+                Dashboard
+            </h1>
+            <p class="text-muted">Welcome back! Here's your performance overview</p>
+        </div>
+
+        <!-- Stats Cards Row -->
+        {% if request.user.is_staff %}
+        <div class="row g-4 mb-5">
+            <div class="col-sm-6 col-lg-3 fade-in-up" style="animation-delay: 0.1s;">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p class="stat-label mb-1">Active Users</p>
+                            <h2 class="stat-number mb-0" data-target="{{total_users}}">0</h2>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                            <i data-lucide="users" size="32" color="white"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-white-50">
+                        <span class="badge bg-white bg-opacity-25 text-white">Today: {{today_users}}</span>
+                        <span class="small">+{{gain_users}}% growth</span>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-3 mb-3">
-                <div class="card">
-                    <div class="card-body text-center mt-4">
-                        <h1 class="card-title pricing-card-title">{{total_quizzes}}</h1>
-                        <p class="card-text">Quizzes</p>
-                        <ul class="list-group mt-5">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Today
-                                <span class="badge bg-primary rounded-pill">{{today_quizzes}}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Gain %
-                                <span class="badge bg-primary rounded-pill">{{gain_quizzes}}</span>
-                            </li>
-                        </ul>
+
+            <div class="col-sm-6 col-lg-3 fade-in-up" style="animation-delay: 0.2s;">
+                <div class="stat-card"
+                    style="background: linear-gradient(135deg, var(--secondary) 0%, hsl(185, 75%, 30%) 100%);">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p class="stat-label mb-1">Total Quizzes</p>
+                            <h2 class="stat-number mb-0" data-target="{{total_quizzes}}">0</h2>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                            <i data-lucide="file-text" size="32" color="white"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-white-50">
+                        <span class="badge bg-white bg-opacity-25 text-white">Today: {{today_quizzes}}</span>
+                        <span class="small">+{{gain_quizzes}}% growth</span>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-3 mb-3">
-                <div class="card">
-                    <div class="card-body text-center mt-4">
-                        <h1 class="card-title pricing-card-title">{{total_quiz_submit}}</h1>
-                        <p class="card-text">Submissions</p>
-                        <ul class="list-group mt-5">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Today
-                                <span class="badge bg-primary rounded-pill">{{today_quiz_submit}}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Gain %
-                                <span class="badge bg-primary rounded-pill">{{gain_quiz_submit}}</span>
-                            </li>
-                        </ul>
+
+            <div class="col-sm-6 col-lg-3 fade-in-up" style="animation-delay: 0.3s;">
+                <div class="stat-card"
+                    style="background: linear-gradient(135deg, var(--success) 0%, hsl(152, 69%, 25%) 100%);">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p class="stat-label mb-1">Submissions</p>
+                            <h2 class="stat-number mb-0" data-target="{{total_quiz_submit}}">0</h2>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                            <i data-lucide="send" size="32" color="white"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-white-50">
+                        <span class="badge bg-white bg-opacity-25 text-white">Today: {{today_quiz_submit}}</span>
+                        <span class="small">+{{gain_quiz_submit}}% growth</span>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-3 mb-3">
-                <div class="card">
-                    <div class="card-body text-center mt-4">
-                        <h1 class="card-title pricing-card-title">{{total_questions}}</h1>
-                        <p class="card-text">Questions</p>
-                        <ul class="list-group mt-5">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Today
-                                <span class="badge bg-primary rounded-pill">{{today_questions}}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Gain %
-                                <span class="badge bg-primary rounded-pill">{{gain_questions}}</span>
-                            </li>
-                        </ul>
+
+            <div class="col-sm-6 col-lg-3 fade-in-up" style="animation-delay: 0.4s;">
+                <div class="stat-card"
+                    style="background: linear-gradient(135deg, var(--warning) 0%, hsl(45, 100%, 40%) 100%);">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p class="stat-label mb-1">Questions</p>
+                            <h2 class="stat-number mb-0" data-target="{{total_questions}}">0</h2>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                            <i data-lucide="help-circle" size="32" color="white"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-white-50">
+                        <span class="badge bg-white bg-opacity-25 text-white">Today: {{today_questions}}</span>
+                        <span class="small">+{{gain_questions}}% growth</span>
                     </div>
                 </div>
             </div>
         </div>
+        {% endif %}
 
+        <!-- Quick Actions -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6 col-lg-3 fade-in-up" style="animation-delay: 0.5s;">
+                <a href="{% url 'all_quiz' %}" class="text-decoration-none">
+                    <div class="dashboard-card hover-lift text-center">
+                        <div class="bg-primary-light text-primary rounded-circle d-inline-flex p-3 mb-3">
+                            <i data-lucide="play-circle" size="32"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Start Quiz</h5>
+                        <p class="text-muted small mb-0">Begin a new practice session</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-3 fade-in-up" style="animation-delay: 0.6s;">
+                <a href="{% url 'leaderboard' %}" class="text-decoration-none">
+                    <div class="dashboard-card hover-lift text-center">
+                        <div class="bg-warning-light text-warning rounded-circle d-inline-flex p-3 mb-3">
+                            <i data-lucide="trophy" size="32"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Leaderboard</h5>
+                        <p class="text-muted small mb-0">See top performers</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-3 fade-in-up" style="animation-delay: 0.7s;">
+                <a href="{% url 'profile' request.user.username %}" class="text-decoration-none">
+                    <div class="dashboard-card hover-lift text-center">
+                        <div class="bg-info-light text-info rounded-circle d-inline-flex p-3 mb-3">
+                            <i data-lucide="user" size="32"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">My Profile</h5>
+                        <p class="text-muted small mb-0">View your statistics</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-3 fade-in-up" style="animation-delay: 0.8s;">
+                <a href="{% url 'notes' %}" class="text-decoration-none">
+                    <div class="dashboard-card hover-lift text-center">
+                        <div class="bg-success-light text-success rounded-circle d-inline-flex p-3 mb-3">
+                            <i data-lucide="book-open" size="32"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Study Notes</h5>
+                        <p class="text-muted small mb-0">Access study materials</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Inbox Section -->
         <div class="row">
-            <div class="col-sm-12 col-md-12 mb-3">
-                <h2 class="mb-3 text-center">Inbox</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">User</th>
-                            <th scope="col">Subject</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for message in messages %}
-                        <tr class="table-{% if not message.is_read %}active{% endif %}">
-                            <th scope="row">{{forloop.counter}}</th>
-                            <td><a href="{% url 'profile' message.user.username %}">@{{message.user.username}}</a></td>
-
-                            <td>{{message.subject}}</td>
-                            <td>{{message.created_at}}</td>
-                            <td><a href="{% url 'message' message.id %}" class="btn btn-sm btn-primary">Open</a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="col-12 fade-in-up" style="animation-delay: 0.9s;">
+                <div class="card border-0 shadow-sm rounded-3xl overflow-hidden">
+                    <div class="card-header bg-white border-0 p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <i data-lucide="inbox" class="text-primary" size="24"></i>
+                                <h4 class="fw-bold mb-0">Inbox</h4>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">{{messages|length}} messages</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if messages %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-surface-2">
+                                    <tr>
+                                        <th scope="col" class="px-4 py-3 fw-semibold">#</th>
+                                        <th scope="col" class="px-4 py-3 fw-semibold">User</th>
+                                        <th scope="col" class="px-4 py-3 fw-semibold">Subject</th>
+                                        <th scope="col" class="px-4 py-3 fw-semibold">Time</th>
+                                        <th scope="col" class="px-4 py-3 fw-semibold">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for message in messages %}
+                                    <tr class="{% if not message.is_read %}table-active{% endif %}">
+                                        <th scope="row" class="px-4 py-3">
+                                            {% if not message.is_read %}
+                                            <span class="badge bg-primary rounded-circle"
+                                                style="width: 8px; height: 8px; padding: 0;"></span>
+                                            {% endif %}
+                                            {{forloop.counter}}
+                                        </th>
+                                        <td class="px-4 py-3">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                    style="width: 32px; height: 32px; font-size: 0.875rem; font-weight: bold;">
+                                                    {{message.user.username|slice:":1"|upper}}
+                                                </div>
+                                                <a href="{% url 'profile' message.user.username %}"
+                                                    class="text-decoration-none fw-medium">
+                                                    @{{message.user.username}}
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="{% if not message.is_read %}fw-bold{% endif %}">
+                                                {{message.subject}}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-muted small">{{message.created_at|timesince}} ago</td>
+                                        <td class="px-4 py-3">
+                                            <a href="{% url 'message' message.id %}"
+                                                class="btn btn-sm btn-primary rounded-pill px-3">
+                                                <i data-lucide="mail-open" size="14"></i>
+                                                Open
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i data-lucide="inbox" class="text-muted mb-3" size="64"></i>
+                            <h5 class="text-muted">No messages yet</h5>
+                            <p class="text-muted small">Your inbox is empty</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        lucide.createIcons();
+    });
+</script>
+
+<style>
+    .bg-warning-light {
+        background-color: hsl(45, 100%, 90%);
+    }
+
+    .text-warning {
+        color: var(--warning);
+    }
+
+    .bg-info-light {
+        background-color: hsl(190, 90%, 90%);
+    }
+
+    .text-info {
+        color: var(--info);
+    }
+
+    .bg-success-light {
+        background-color: hsl(152, 69%, 90%);
+    }
+
+    .text-success {
+        color: var(--success);
+    }
+
+    .bg-primary-light {
+        background-color: var(--primary-lighter);
+    }
+</style>
 
 {% endblock content %}

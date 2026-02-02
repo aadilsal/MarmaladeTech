@@ -1,124 +1,513 @@
 {% extends "index.html" %}
 {% load static %}
-{% block title %}Home - MDCAT Expert{% endblock title %}
+{% block title %}Home - MDCAT Expert | Master Your Medical Entrance Exam{% endblock title %}
 {% block content %}
 
 <!-- Hero Section -->
-<section class="hero-section bg-gradient-primary text-white py-5">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6">
-        <h1 class="display-4 fw-bold mb-4 animate-fade-in">Master MDCAT with Smart Practice</h1>
-        <p class="lead mb-4 animate-slide-up">Join thousands of students preparing for the MDCAT exam with our comprehensive quiz platform. Track your progress, practice with real questions, and boost your scores.</p>
-        <div class="stats mb-4">
-          <div class="row text-center">
-            <div class="col-4">
-              <h3 class="fw-bold">1000+</h3>
-              <p class="mb-0">Questions</p>
-            </div>
-            <div class="col-4">
-              <h3 class="fw-bold">5000+</h3>
-              <p class="mb-0">Students</p>
-            </div>
-            <div class="col-4">
-              <h3 class="fw-bold">95%</h3>
-              <p class="mb-0">Success Rate</p>
-            </div>
-          </div>
+<section class="hero-section bg-gradient-primary text-white py-5 position-relative overflow-hidden">
+  <div class="container position-relative z-1">
+    <div class="row align-items-center py-5">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        <div class="badge bg-white text-primary px-3 py-2 rounded-pill mb-3 fade-in-up">
+          <i data-lucide="sparkles" class="me-1" style="width: 16px; height: 16px;"></i>
+          Pakistan's #1 MDCAT Preparation Platform
         </div>
-        <div class="d-flex flex-column flex-sm-row gap-3">
-          <a href="{% url 'all_quiz' %}" class="btn btn-light btn-lg px-4 animate-bounce">
-            <i class="bi bi-play-circle-fill me-2"></i>Start Practicing Now
+        <h1 class="display-3 fw-bold mb-4 fade-in-up" style="animation-delay: 0.1s;">
+          Master MDCAT with <span class="text-gradient-gold">Smart Practice</span>
+        </h1>
+        <p class="lead mb-4 fade-in-up" style="animation-delay: 0.2s; font-size: 1.25rem;">
+          Join thousands of successful students preparing for the MDCAT exam. Practice with 1000+ real questions, track
+          your progress in real-time, and achieve your medical school dreams.
+        </p>
+
+
+
+        <div class="d-flex flex-column flex-sm-row gap-3 fade-in-up" style="animation-delay: 0.4s;">
+          <a href="{% url 'all_quiz' %}"
+            class="btn btn-light btn-lg px-5 shadow-lg text-primary fw-bold hover-lift d-flex align-items-center justify-content-center gap-2">
+            <i data-lucide="play-circle" size="20"></i> Start Practicing Now
           </a>
-          {% if request.user.is_authenticated %}
-          <a href="{% url 'leaderboard' %}" class="btn btn-outline-light btn-lg px-4">
-            <i class="bi bi-trophy-fill me-2"></i>View Leaderboard
-          </a>
-          {% else %}
-          <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">
-            <i class="bi bi-person-plus-fill me-2"></i>Join Free
+          {% if not request.user.is_authenticated %}
+          <a href="{% url 'register' %}"
+            class="btn btn-outline-light btn-lg px-5 hover-lift d-flex align-items-center justify-content-center gap-2">
+            <i data-lucide="user-plus" size="20"></i> Join Free
           </a>
           {% endif %}
         </div>
       </div>
-      <div class="col-lg-6 text-center">
-        <img src="{% static 'images/hero-illustration.svg' %}" alt="MDCAT Preparation Illustration" class="img-fluid animate-float" style="max-width: 400px;">
+      <div class="col-lg-6 text-center fade-in-up" style="animation-delay: 0.5s;">
+        <div class="position-relative">
+          <img src="{% static 'images/hero-illustration.svg' %}" alt="MDCAT Preparation Illustration"
+            class="img-fluid animate-float rounded-3xl shadow-brand-lg" style="max-width: 500px;">
+          <div class="position-absolute top-0 end-0 bg-white rounded-xl shadow-lg p-3 m-3 animate-pulse hero-annotation">
+            <div class="d-flex align-items-center gap-2">
+              <i data-lucide="trending-up" class="text-success" size="24"></i>
+              <div class="text-start">
+                <div class="fw-bold text-success">+15%</div>
+                <small class="text-muted">Avg. Score Increase</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Decorative background elements -->
+  <div class="position-absolute bottom-0 end-0 opacity-10 mb-n5 me-n5">
+    <i data-lucide="activity" size="400" color="white"></i>
+  </div>
+</section>
+
+<!-- What is MDCAT Expert Section -->
+<section class="py-5 bg-white">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0 fade-in-left">
+        <div class="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-3">
+          <i data-lucide="info" class="me-1" style="width: 16px; height: 16px;"></i>
+          About Our Platform
+        </div>
+        <h2 class="display-5 fw-bold mb-4">What is MDCAT Expert?</h2>
+        <p class="lead text-muted mb-4">
+          MDCAT Expert is Pakistan's most comprehensive online platform designed specifically for students preparing for
+          the Medical and Dental College Admission Test (MDCAT).
+        </p>
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex gap-3">
+            <div class="flex-shrink-0">
+              <div class="bg-primary-light text-primary rounded-circle p-2"
+                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="check" size="20"></i>
+              </div>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1">Comprehensive Question Bank</h5>
+              <p class="text-muted mb-0">1000+ carefully curated questions covering all MDCAT subjects</p>
+            </div>
+          </div>
+          <div class="d-flex gap-3">
+            <div class="flex-shrink-0">
+              <div class="bg-primary-light text-primary rounded-circle p-2"
+                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="check" size="20"></i>
+              </div>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1">Real-Time Progress Tracking</h5>
+              <p class="text-muted mb-0">Monitor your performance and identify areas for improvement</p>
+            </div>
+          </div>
+          <div class="d-flex gap-3">
+            <div class="flex-shrink-0">
+              <div class="bg-primary-light text-primary rounded-circle p-2"
+                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="check" size="20"></i>
+              </div>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1">Detailed Explanations</h5>
+              <p class="text-muted mb-0">Learn from in-depth explanations for every question</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 fade-in-right">
+        <div class="card border-0 shadow-lg rounded-3xl overflow-hidden">
+          <div class="card-body p-4">
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="stat-card text-center p-3">
+                  <i data-lucide="book-open" class="text-white mb-2" size="32"></i>
+                  <h4 class="fw-bold mb-0 text-white">Biology</h4>
+                  <small class="text-white-50">300+ Questions</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="stat-card text-center p-3"
+                  style="background: linear-gradient(135deg, var(--secondary) 0%, hsl(185, 75%, 30%) 100%);">
+                  <i data-lucide="flask-conical" class="text-white mb-2" size="32"></i>
+                  <h4 class="fw-bold mb-0 text-white">Chemistry</h4>
+                  <small class="text-white-50">300+ Questions</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="stat-card text-center p-3"
+                  style="background: linear-gradient(135deg, var(--success) 0%, hsl(152, 69%, 25%) 100%);">
+                  <i data-lucide="atom" class="text-white mb-2" size="32"></i>
+                  <h4 class="fw-bold mb-0 text-white">Physics</h4>
+                  <small class="text-white-50">200+ Questions</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="stat-card text-center p-3"
+                  style="background: linear-gradient(135deg, var(--warning) 0%, hsl(45, 100%, 40%) 100%);">
+                  <i data-lucide="brain" class="text-white mb-2" size="32"></i>
+                  <h4 class="fw-bold mb-0 text-white">English</h4>
+                  <small class="text-white-50">200+ Questions</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-surface-2">
+  <div class="container py-5">
+    <div class="text-center mb-5 fade-in-up">
+      <div class="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-3">
+        <i data-lucide="map" class="me-1" style="width: 16px; height: 16px;"></i>
+        Simple Process
+      </div>
+      <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+      <p class="lead text-muted">Start your MDCAT preparation journey in just 3 simple steps</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4 fade-in-up" style="animation-delay: 0.1s;">
+        <div class="card h-100 border-0 shadow-sm hover-lift rounded-3xl text-center p-4">
+          <div class="card-body">
+            <div
+              class="bg-primary text-white rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center"
+              style="width: 80px; height: 80px;">
+              <span class="display-4 fw-bold">1</span>
+            </div>
+            <div class="bg-primary-light text-primary d-inline-flex p-3 rounded-circle mb-3">
+              <i data-lucide="user-plus" size="32"></i>
+            </div>
+            <h4 class="fw-bold mb-3">Create Your Account</h4>
+            <p class="text-muted">Sign up for free in seconds. No credit card required. Start your journey to medical
+              school today.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 fade-in-up" style="animation-delay: 0.2s;">
+        <div class="card h-100 border-0 shadow-sm hover-lift rounded-3xl text-center p-4">
+          <div class="card-body">
+            <div
+              class="bg-secondary text-white rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center"
+              style="width: 80px; height: 80px;">
+              <span class="display-4 fw-bold">2</span>
+            </div>
+            <div class="bg-info-light text-info d-inline-flex p-3 rounded-circle mb-3">
+              <i data-lucide="book-open-check" size="32"></i>
+            </div>
+            <h4 class="fw-bold mb-3">Practice & Learn</h4>
+            <p class="text-muted">Take quizzes, review detailed explanations, and track your progress across all
+              subjects.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 fade-in-up" style="animation-delay: 0.3s;">
+        <div class="card h-100 border-0 shadow-sm hover-lift rounded-3xl text-center p-4">
+          <div class="card-body">
+            <div
+              class="bg-success text-white rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center"
+              style="width: 80px; height: 80px;">
+              <span class="display-4 fw-bold">3</span>
+            </div>
+            <div class="bg-success-light text-success d-inline-flex p-3 rounded-circle mb-3">
+              <i data-lucide="trophy" size="32"></i>
+            </div>
+            <h4 class="fw-bold mb-3">Excel in MDCAT</h4>
+            <p class="text-muted">Achieve your target score and secure admission to your dream medical college.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Features Section -->
-<section class="features-section py-5 bg-light">
-  <div class="container">
-    <div class="text-center mb-5">
-      <h2 class="display-5 fw-bold mb-3">Why Choose MDCAT Expert?</h2>
-      <p class="lead text-muted">Our platform provides everything you need to excel in your MDCAT preparation</p>
+<section class="features-section py-5 bg-white">
+  <div class="container py-5">
+    <div class="text-center mb-5 fade-in-up">
+      <div class="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-3">
+        <i data-lucide="zap" class="me-1" style="width: 16px; height: 16px;"></i>
+        Platform Features
+      </div>
+      <h2 class="display-5 fw-bold mb-3 text-gradient">Why Choose MDCAT Expert?</h2>
+      <p class="lead text-muted">Everything you need to excel in your MDCAT preparation</p>
     </div>
     <div class="row g-4">
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card card h-100 border-0 shadow-sm animate-on-scroll">
-          <div class="card-body text-center p-4">
-            <div class="feature-icon mb-3">
-              <i class="bi bi-journal-check display-4 text-primary"></i>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.1s;">
+        <div class="feature-card card h-100 border-0 shadow-sm hover-lift rounded-3xl p-4">
+          <div class="card-body text-center">
+            <div class="bg-primary-light d-inline-flex p-3 rounded-circle mb-3 text-primary">
+              <i data-lucide="book-open-check" size="32"></i>
             </div>
-            <h5 class="card-title fw-bold">Practice Tests</h5>
-            <p class="card-text text-muted">Comprehensive quizzes covering all MDCAT subjects with varying difficulty levels</p>
+            <h5 class="card-title fw-bold mb-2">Comprehensive Practice Tests</h5>
+            <p class="card-text text-muted">1000+ questions covering Biology, Chemistry, Physics, and English with
+              varying difficulty levels</p>
           </div>
         </div>
       </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card card h-100 border-0 shadow-sm animate-on-scroll">
-          <div class="card-body text-center p-4">
-            <div class="feature-icon mb-3">
-              <i class="bi bi-lightbulb display-4 text-success"></i>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.2s;">
+        <div class="feature-card card h-100 border-0 shadow-sm hover-lift rounded-3xl p-4">
+          <div class="card-body text-center">
+            <div class="bg-success-light d-inline-flex p-3 rounded-circle mb-3 text-success">
+              <i data-lucide="lightbulb" size="32"></i>
             </div>
-            <h5 class="card-title fw-bold">Detailed Explanations</h5>
-            <p class="card-text text-muted">In-depth explanations for every question to help you understand concepts better</p>
+            <h5 class="card-title fw-bold mb-2">Detailed Explanations</h5>
+            <p class="card-text text-muted">In-depth explanations for every question to help you understand concepts
+              better</p>
           </div>
         </div>
       </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card card h-100 border-0 shadow-sm animate-on-scroll">
-          <div class="card-body text-center p-4">
-            <div class="feature-icon mb-3">
-              <i class="bi bi-graph-up display-4 text-info"></i>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.3s;">
+        <div class="feature-card card h-100 border-0 shadow-sm hover-lift rounded-3xl p-4">
+          <div class="card-body text-center">
+            <div class="bg-info-light d-inline-flex p-3 rounded-circle mb-3 text-info">
+              <i data-lucide="trending-up" size="32"></i>
             </div>
-            <h5 class="card-title fw-bold">Progress Tracking</h5>
-            <p class="card-text text-muted">Real-time tracking of your performance and improvement over time</p>
+            <h5 class="card-title fw-bold mb-2">Real-Time Progress Tracking</h5>
+            <p class="card-text text-muted">Monitor your performance and improvement over time with detailed analytics
+            </p>
           </div>
         </div>
       </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card card h-100 border-0 shadow-sm animate-on-scroll">
-          <div class="card-body text-center p-4">
-            <div class="feature-icon mb-3">
-              <i class="bi bi-bar-chart-line display-4 text-warning"></i>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.4s;">
+        <div class="feature-card card h-100 border-0 shadow-sm hover-lift rounded-3xl p-4">
+          <div class="card-body text-center">
+            <div class="bg-warning-light d-inline-flex p-3 rounded-circle mb-3 text-warning">
+              <i data-lucide="bar-chart-2" size="32"></i>
             </div>
-            <h5 class="card-title fw-bold">Performance Analytics</h5>
-            <p class="card-text text-muted">Detailed analytics and insights to identify strengths and weaknesses</p>
+            <h5 class="card-title fw-bold mb-2">Performance Analytics</h5>
+            <p class="card-text text-muted">Detailed insights to identify strengths and weaknesses across all subjects
+            </p>
           </div>
         </div>
       </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card card h-100 border-0 shadow-sm animate-on-scroll">
-          <div class="card-body text-center p-4">
-            <div class="feature-icon mb-3">
-              <i class="bi bi-clock display-4 text-danger"></i>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.5s;">
+        <div class="feature-card card h-100 border-0 shadow-sm hover-lift rounded-3xl p-4">
+          <div class="card-body text-center">
+            <div class="bg-danger-light d-inline-flex p-3 rounded-circle mb-3 text-danger">
+              <i data-lucide="timer" size="32"></i>
             </div>
-            <h5 class="card-title fw-bold">Timed Quizzes</h5>
-            <p class="card-text text-muted">Practice under exam conditions with timed quizzes to improve time management</p>
+            <h5 class="card-title fw-bold mb-2">Timed Practice Quizzes</h5>
+            <p class="card-text text-muted">Practice under exam conditions with timed quizzes to improve time management
+            </p>
           </div>
         </div>
       </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card card h-100 border-0 shadow-sm animate-on-scroll">
-          <div class="card-body text-center p-4">
-            <div class="feature-icon mb-3">
-              <i class="bi bi-tags display-4 text-secondary"></i>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.6s;">
+        <div class="feature-card card h-100 border-0 shadow-sm hover-lift rounded-3xl p-4">
+          <div class="card-body text-center">
+            <div class="bg-secondary-light d-inline-flex p-3 rounded-circle mb-3 text-secondary">
+              <i data-lucide="layers" size="32"></i>
             </div>
-            <h5 class="card-title fw-bold">Topic-wise Practice</h5>
+            <h5 class="card-title fw-bold mb-2">Topic-Wise Practice</h5>
             <p class="card-text text-muted">Focus on specific topics and subjects to strengthen your weak areas</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.7s;">
+        <div class="feature-card card h-100 border-0 shadow-sm hover-lift rounded-3xl p-4">
+          <div class="card-body text-center">
+            <div class="bg-primary-light d-inline-flex p-3 rounded-circle mb-3 text-primary">
+              <i data-lucide="users" size="32"></i>
+            </div>
+            <h5 class="card-title fw-bold mb-2">Competitive Leaderboard</h5>
+            <p class="card-text text-muted">Compare your performance with thousands of students across Pakistan</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.8s;">
+        <div class="feature-card card h-100 border-0 shadow-sm hover-lift rounded-3xl p-4">
+          <div class="card-body text-center">
+            <div class="bg-success-light d-inline-flex p-3 rounded-circle mb-3 text-success">
+              <i data-lucide="smartphone" size="32"></i>
+            </div>
+            <h5 class="card-title fw-bold mb-2">Mobile Responsive</h5>
+            <p class="card-text text-muted">Practice anywhere, anytime on your phone, tablet, or computer</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-surface-2">
+  <div class="container py-5">
+    <div class="text-center mb-5 fade-in-up">
+      <div class="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-3">
+        <i data-lucide="message-circle" class="me-1" style="width: 16px; height: 16px;"></i>
+        Success Stories
+      </div>
+      <h2 class="display-5 fw-bold mb-3">What Our Students Say</h2>
+      <p class="lead text-muted">Join thousands of successful MDCAT students</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.1s;">
+        <div class="card h-100 border-0 shadow-sm rounded-3xl p-4">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                style="width: 50px; height: 50px; font-size: 1.5rem; font-weight: bold;">
+                A
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0">Ayesha Khan</h6>
+                <small class="text-muted">King Edward Medical University</small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+            </div>
+            <p class="text-muted mb-0">"MDCAT Expert helped me improve my score by 20%! The detailed explanations and
+              progress tracking were game-changers for my preparation."</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.2s;">
+        <div class="card h-100 border-0 shadow-sm rounded-3xl p-4">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                style="width: 50px; height: 50px; font-size: 1.5rem; font-weight: bold;">
+                M
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0">Muhammad Ali</h6>
+                <small class="text-muted">Aga Khan University</small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+            </div>
+            <p class="text-muted mb-0">"The best MDCAT preparation platform! The question bank is comprehensive and the
+              timed quizzes helped me manage my time better in the actual exam."</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: 0.3s;">
+        <div class="card h-100 border-0 shadow-sm rounded-3xl p-4">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                style="width: 50px; height: 50px; font-size: 1.5rem; font-weight: bold;">
+                F
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0">Fatima Ahmed</h6>
+                <small class="text-muted">Dow Medical College</small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+              <i data-lucide="star" class="text-warning" size="16" fill="currentColor"></i>
+            </div>
+            <p class="text-muted mb-0">"I loved the leaderboard feature! It kept me motivated to practice daily and
+              compete with other students. Highly recommend this platform!"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-white">
+  <div class="container py-5">
+    <div class="text-center mb-5 fade-in-up">
+      <div class="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-3">
+        <i data-lucide="help-circle" class="me-1" style="width: 16px; height: 16px;"></i>
+        Got Questions?
+      </div>
+      <h2 class="display-5 fw-bold mb-3">Frequently Asked Questions</h2>
+      <p class="lead text-muted">Everything you need to know about MDCAT Expert</p>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-8 fade-in-up">
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item border-0 shadow-sm rounded-xl mb-3">
+            <h2 class="accordion-header">
+              <button class="accordion-button rounded-xl" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq1">
+                <i data-lucide="help-circle" class="me-2" size="20"></i>
+                Is MDCAT Expert really free?
+              </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Yes! MDCAT Expert is completely free to use. You can access all quizzes, track your progress, and
+                compete on the leaderboard without any charges.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item border-0 shadow-sm rounded-xl mb-3">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed rounded-xl" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq2">
+                <i data-lucide="help-circle" class="me-2" size="20"></i>
+                How many questions are available?
+              </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                We have over 1000 questions covering all MDCAT subjects: Biology, Chemistry, Physics, and English. New
+                questions are added regularly.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item border-0 shadow-sm rounded-xl mb-3">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed rounded-xl" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq3">
+                <i data-lucide="help-circle" class="me-2" size="20"></i>
+                Can I practice on my mobile phone?
+              </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Absolutely! MDCAT Expert is fully responsive and works perfectly on smartphones, tablets, and computers.
+                Practice anywhere, anytime.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item border-0 shadow-sm rounded-xl mb-3">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed rounded-xl" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq4">
+                <i data-lucide="help-circle" class="me-2" size="20"></i>
+                How does progress tracking work?
+              </button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Every quiz you take is automatically tracked. You can view your performance history, see which subjects
+                need more work, and monitor your improvement over time in your dashboard.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item border-0 shadow-sm rounded-xl">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed rounded-xl" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq5">
+                <i data-lucide="help-circle" class="me-2" size="20"></i>
+                Are the questions similar to actual MDCAT?
+              </button>
+            </h2>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Yes! Our questions are carefully designed to match the difficulty level and format of the actual MDCAT
+                exam, giving you the best preparation experience.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -127,35 +516,108 @@
 </section>
 
 <!-- CTA Section -->
-<section class="cta-section bg-primary text-white py-5">
-  <div class="container text-center">
-    <h2 class="display-5 fw-bold mb-3">Ready to Ace Your MDCAT?</h2>
-    <p class="lead mb-4">Start your journey towards medical school success today</p>
-    <a href="{% url 'all_quiz' %}" class="btn btn-light btn-lg px-5 animate-pulse">
-      <i class="bi bi-rocket-takeoff-fill me-2"></i>Take Your First Quiz
-    </a>
+<section class="cta-section bg-gradient-primary text-white py-5 position-relative overflow-hidden">
+  <div class="position-absolute top-0 start-0 opacity-10 mt-n5 ms-n5">
+    <i data-lucide="zap" size="300" color="white"></i>
+  </div>
+
+  <div class="container text-center position-relative z-1 py-5">
+    <div class="fade-in-up">
+      <h2 class="display-4 fw-bold mb-3">Ready to Ace Your MDCAT?</h2>
+      <p class="lead mb-4 text-white-50">Join 5000+ students and start your journey towards medical school success today
+      </p>
+      <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+        <a href="{% url 'all_quiz' %}"
+          class="btn btn-light btn-lg px-5 shadow-lg text-primary fw-bold hover-scale transition-transform d-inline-flex align-items-center gap-2">
+          <i data-lucide="rocket" size="24"></i> Take Your First Quiz
+        </a>
+        {% if not request.user.is_authenticated %}
+        <a href="{% url 'register' %}"
+          class="btn btn-outline-light btn-lg px-5 hover-lift d-inline-flex align-items-center gap-2">
+          <i data-lucide="user-plus" size="24"></i> Create Free Account
+        </a>
+        {% endif %}
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- Newsletter Section -->
-<section class="newsletter-section py-5 bg-light">
-  <div class="container">
+<section class="newsletter-section py-5 bg-white">
+  <div class="container py-4">
     <div class="row justify-content-center">
-      <div class="col-lg-6 text-center">
+      <div class="col-lg-6 text-center fade-in-up">
+        <i data-lucide="mail" class="text-primary mb-3" size="48"></i>
         <h3 class="fw-bold mb-3">Stay Updated</h3>
-        <p class="text-muted mb-4">Get the latest MDCAT tips, study materials, and platform updates</p>
-        <form class="newsletter-form" id="newsletterForm">
-          <div class="input-group mb-3">
-            <input type="email" class="form-control form-control-lg" placeholder="Enter your email" id="newsletterEmail" required>
-            <button class="btn btn-primary btn-lg" type="submit">
-              <i class="bi bi-envelope-fill me-2"></i>Subscribe
+        <p class="text-muted mb-4">Get the latest MDCAT tips, study materials, and platform updates delivered to your
+          inbox</p>
+        <form class="newsletter-form shadow-sm p-1 rounded-pill border" id="newsletterForm">
+          <div class="input-group">
+            <input type="email" class="form-control form-control-lg border-0 rounded-pill ps-4"
+              placeholder="Enter your email" id="newsletterEmail" required>
+            <button class="btn btn-primary rounded-pill px-4 m-1" type="submit">
+              Subscribe
             </button>
           </div>
-          <div id="newsletterFeedback" class="form-text"></div>
+          <div id="newsletterFeedback" class="form-text mt-2"></div>
         </form>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    lucide.createIcons();
+  });
+</script>
+
+<style>
+  .bg-primary-light {
+    background-color: var(--primary-lighter);
+  }
+
+  .bg-secondary-light {
+    background-color: var(--secondary-light);
+  }
+
+  .bg-success-light {
+    background-color: hsl(152, 69%, 90%);
+  }
+
+  .bg-info-light {
+    background-color: hsl(190, 90%, 90%);
+  }
+
+  .bg-warning-light {
+    background-color: hsl(45, 100%, 90%);
+  }
+
+  .bg-danger-light {
+    background-color: hsl(354, 70%, 90%);
+  }
+
+  .text-info {
+    color: var(--info);
+  }
+
+  .text-warning {
+    color: var(--warning);
+  }
+
+  .text-secondary {
+    color: var(--secondary);
+  }
+
+  .stat-card-mini {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .stat-card-mini:hover {
+    transform: translateY(-2px);
+  }
+</style>
 
 {% endblock content %}
